@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binaan CSR | Community Development Portal</title>
+<meta name="description" content="Digital Masyarakat Binaan — Community Development Portal PT Mifa Bersaudara">
+<style>
+:root{--green:#087443;--green2:#0d8752;--dark:#083d2a;--soft:#eef6f1;--bg:#f6f8f7;--line:#e2eae5;--text:#17372a;--muted:#718078;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:var(--bg)}
+a{text-decoration:none;color:inherit}button,select{font:inherit}.container{width:min(1180px,90%);margin:auto}
+.nav{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:11px}.brandmark{width:40px;height:40px;background:var(--green);border-radius:12px;color:#fff;display:grid;place-items:center;font-weight:900}.brand strong{font-size:17px;letter-spacing:.3px}.brand small{display:block;color:#829089;font-size:10px;margin-top:2px}
+.menu{display:flex;align-items:center;gap:3px}.menu>a,.dropdown>button{background:transparent;border:0;padding:11px 10px;border-radius:9px;color:#40584e;font-size:13px;font-weight:650;cursor:pointer}.menu>a:hover,.dropdown>button:hover{background:var(--soft);color:var(--green)}
+.dropdown{position:relative}.dropdown-menu{display:none;position:absolute;top:44px;right:0;width:250px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 18px 40px #153d2a18}.dropdown:hover .dropdown-menu{display:block}.dropdown-menu a{display:block;padding:9px 11px;border-radius:8px;font-size:12px;color:#52675d}.dropdown-menu a:hover{background:var(--soft);color:var(--green)}
+.hero{background:linear-gradient(120deg,#073c29,#087443);color:#fff;padding:105px 0 115px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:550px;height:550px;border-radius:50%;right:-220px;top:-270px;background:#ffffff0b}.eyebrow{font-size:12px;font-weight:800;letter-spacing:2.4px;color:#bfe7d2}.hero h1{font-size:clamp(44px,6vw,72px);line-height:1.02;margin:15px 0 20px;max-width:760px}.hero p{font-size:17px;line-height:1.8;color:#e1f0e8;max-width:650px}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-block;padding:13px 19px;border-radius:10px;font-weight:800;font-size:13px}.btn.primary{background:#fff;color:var(--green)}.btn.secondary{border:1px solid #ffffff55;color:#fff}
+.hero-note{position:absolute;right:7%;bottom:35px;font-size:11px;color:#b8d9c9}
+section{padding:72px 0}.section-title{font-size:31px;margin:0}.section-sub{color:var(--muted);font-size:14px;line-height:1.7;margin-top:8px}.simple-about{max-width:790px}
+.program-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:27px}.info-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:21px;min-height:150px}.icon{width:40px;height:40px;border-radius:11px;background:var(--soft);color:var(--green);display:grid;place-items:center;font-weight:900;margin-bottom:16px}.info-card h3{font-size:16px;margin:0 0 7px}.info-card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+.white{background:#fff}.dashboard{background:#fff;border:1px solid var(--line);border-radius:19px;padding:24px;margin-top:25px}.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:22px}.filters select{background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:#496057}.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}.kpi{background:var(--bg);border-radius:12px;padding:17px}.kpi small{font-size:11px;color:var(--muted)}.kpi b{display:block;font-size:24px;margin-top:6px;color:var(--green)}
+.charts{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;margin-top:22px}.chartbox{border:1px solid var(--line);border-radius:15px;padding:20px}.chartbox h3{margin:0;font-size:15px}.chartbox p{font-size:11px;color:var(--muted)}.barrow{display:grid;grid-template-columns:105px 1fr 45px;gap:9px;align-items:center;font-size:12px;margin:13px 0}.bar{height:10px;background:#e6ede9;border-radius:99px;overflow:hidden}.bar i{height:100%;display:block;background:var(--green);border-radius:99px}.donutwrap{display:flex;align-items:center;gap:24px}.donut{width:180px;height:180px;border-radius:50%;background:conic-gradient(#087443 0 58%,#3c9a72 58% 82%,#b4c9bd 82% 90%,#e3a84b 90% 96%,#c86b5e 96% 98%,#dfe5e1 98% 100%);position:relative;flex:none}.donut:after{content:"TOTAL\A PROGRAM";white-space:pre;text-align:center;position:absolute;inset:35px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;color:#4f6259}.legend{font-size:11px;line-height:2}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#087443;margin-right:7px}.status-note{margin-top:20px;padding:13px;border-radius:10px;background:var(--soft);font-size:11px;color:#496057}
+.locations{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-top:25px}.map{min-height:350px;border-radius:18px;background:#dfe9e3;display:grid;place-items:center;color:#60766c;font-size:13px;border:1px solid var(--line)}.list{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}.village{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);font-size:13px}.village:last-child{border:0}.village span{color:var(--muted)}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:25px}.product{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}.photo{height:185px;background:linear-gradient(135deg,#dfe9e3,#f5f8f6);display:grid;place-items:center;color:#7b8c84;font-size:11px}.body{padding:16px}.body small{color:var(--green);font-weight:800;font-size:10px}.body h3{margin:7px 0 5px;font-size:16px}.body p{margin:0;color:var(--muted);font-size:12px}
+.impact{background:#edf5f1}.impact-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:25px}.impact-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}.impact-card b{display:block;color:var(--green);font-size:26px}.impact-card span{font-size:11px;color:var(--muted)}
+.news{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:25px}.news-card{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}.news-card .photo{height:160px}.news-card .body h3{font-size:15px}
+footer{background:#0a3223;color:#dce9e2;padding:35px 5%;display:flex;justify-content:space-between;gap:20px;font-size:12px}
+@media(max-width:1050px){.menu{display:none}.program-grid,.products{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(3,1fr)}.impact-grid{grid-template-columns:repeat(2,1fr)}.charts,.locations{grid-template-columns:1fr}}
+@media(max-width:600px){.hero{padding:70px 0 90px}.hero h1{font-size:43px}section{padding:54px 0}.program-grid,.products,.news,.impact-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.donutwrap{display:block}.donut{margin:auto}.legend{margin-top:18px}.barrow{grid-template-columns:85px 1fr 38px}footer{display:block}footer div+div{margin-top:13px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+<a class="brand" href="#home"><div class="brandmark">BC</div><div><strong>BINAAN CSR</strong><small>Community Development Portal</small></div></a>
+<div class="menu">
+<a href="#home">Home</a>
+<div class="dropdown"><button>Tentang Kami ▾</button><div class="dropdown-menu">
+<a href="#tentang">Prinsip Dasar PPM-CSR</a><a href="#lokasi">Lokasi Binaan</a><a href="#pilar">Pilar CSR</a><a href="#hukum">Dasar Hukum</a><a href="#tim">Tim</a></div></div>
+<div class="dropdown"><button>Mifanomic ▾</button><div class="dropdown-menu">
+<a href="#mifanomic">Mifa Infrastruktur</a><a href="#mifanomic">Mifa Culture & Religion</a><a href="#mifanomic">Mifa Social</a><a href="#mifanomic">Mifa Smart</a><a href="#mifanomic">Mifa Health</a><a href="#mifanomic">Mifa Green</a><a href="#mifanomic">Mifa Village</a><a href="#mifanomic">Mifa Preneur</a><a href="#mifanomic">Mifa ILRA</a><a href="#mifanomic">Mifa CBC</a></div></div>
+<div class="dropdown"><button>Lokasi ▾</button><div class="dropdown-menu"><a href="#lokasi">Peta Sebaran</a><a href="#pagu">Program per Gampong</a></div></div>
+<a href="#sustainability">Sustainability Program</a><a href="#produk">Produk UMKM</a>
+<div class="dropdown"><button>Galeri ▾</button><div class="dropdown-menu"><a href="#galeri">Foto</a><a href="#galeri">Berita</a></div></div>
+</div>
+</nav>
+
+<header id="home" class="hero"><div class="container">
+<div class="eyebrow">DIGITAL MASYARAKAT BINAAN</div>
+<h1>Community<br>Development Portal</h1>
+<p>Temukan produk dan usaha masyarakat binaan melalui program PPM-CSR PT Mifa Bersaudara.</p>
+<div class="buttons"><a class="btn primary" href="#mifanomic">Jelajahi Program</a><a class="btn secondary" href="#produk">Produk UMKM</a></div>
+<div class="hero-note">BINAAN CSR • PPM-CSR</div>
+</div></header>
+
+<section><div class="container simple-about"><h2 class="section-title">Tentang Binaan CSR</h2><p class="section-sub">Binaan CSR merupakan portal informasi dan monitoring pengembangan masyarakat melalui program PPM-CSR PT Mifa Bersaudara, yang menampilkan program, lokasi binaan, perkembangan, serta produk masyarakat binaan.</p></div></section>
+
+<section id="tentang" class="white"><div class="container"><h2 class="section-title">Tentang Kami</h2><p class="section-sub">Informasi umum PPM-CSR, wilayah binaan, pilar, dasar hukum, dan tim.</p><div class="program-grid">
+<div class="info-card"><div class="icon">01</div><h3>Prinsip Dasar PPM-CSR</h3><p>Landasan dan pendekatan pelaksanaan pengembangan masyarakat.</p></div>
+<div class="info-card"><div class="icon">02</div><h3>Lokasi Binaan</h3><p>Informasi wilayah dan gampong binaan.</p></div>
+<div class="info-card" id="pilar"><div class="icon">03</div><h3>Pilar CSR</h3><p>Kerangka 8 pilar PPM-CSR.</p></div>
+<div class="info-card" id="hukum"><div class="icon">04</div><h3>Dasar Hukum & Tim</h3><p>Regulasi dan tata kelola pelaksanaan.</p></div></div></div></section>
+
+<section id="mifanomic"><div class="container"><h2 class="section-title">Mifanomic</h2><p class="section-sub">Informasi dan deskripsi program.</p><div class="program-grid">
+<div class="info-card"><div class="icon">MI</div><h3>Mifa Infrastruktur</h3><p>Sarana dan prasarana pendukung masyarakat.</p></div><div class="info-card"><div class="icon">CR</div><h3>Mifa Culture & Religion</h3><p>Sosial, budaya, dan keagamaan.</p></div><div class="info-card"><div class="icon">MS</div><h3>Mifa Social</h3><p>Program sosial masyarakat.</p></div><div class="info-card"><div class="icon">SM</div><h3>Mifa Smart</h3><p>Pendidikan dan peningkatan kapasitas.</p></div><div class="info-card"><div class="icon">MH</div><h3>Mifa Health</h3><p>Peningkatan kesehatan masyarakat.</p></div><div class="info-card"><div class="icon">MG</div><h3>Mifa Green</h3><p>Lingkungan dan partisipasi masyarakat.</p></div><div class="info-card"><div class="icon">MV</div><h3>Mifa Village</h3><p>Pengembangan kelembagaan dan desa.</p></div><div class="info-card"><div class="icon">MP</div><h3>Mifa Preneur</h3><p>OVOP, Ekstrim, Ekonomi, dan Konservasi.</p></div><div class="info-card"><div class="icon">IL</div><h3>Mifa ILRA</h3><p>Program pengembangan masyarakat.</p></div><div class="info-card"><div class="icon">CB</div><h3>Mifa CBC</h3><p>Community Based Conservation.</p></div></div></div></section>
+
+<section id="lokasi" class="white"><div class="container"><h2 class="section-title">Lokasi</h2><p class="section-sub">Peta sebaran dan program per gampong.</p><div class="locations"><div class="map">PETA SEBARAN INTERAKTIF<br><small>akan dihubungkan ke data lokasi program</small></div><div class="list"><h3>Contoh Sebaran Program</h3><div class="village"><b>Gampong A</b><span>5 Program</span></div><div class="village"><b>Gampong B</b><span>8 Program</span></div><div class="village"><b>Gampong C</b><span>4 Program</span></div><div class="village"><b>Gampong D</b><span>6 Program</span></div></div></div></div></section>
+
+<section id="pagu"><div class="container"><h2 class="section-title">Program per Gampong</h2><p class="section-sub">Daftar program per lokasi. Website publik tidak menampilkan data budget/pagu.</p><div class="dashboard"><div class="filters"><select><option>2026</option><option>2025</option><option>2024</option><option>2023</option></select><select><option>Semua Gampong</option></select><select><option>Semua Jenis Program</option></select></div><div class="kpis"><div class="kpi"><small>Total Program</small><b>—</b></div><div class="kpi"><small>Gampong</small><b>—</b></div><div class="kpi"><small>Program Aktif</small><b>—</b></div></div></div></div></section>
+
+<section id="sustainability" class="white"><div class="container"><h2 class="section-title">Sustainability Program</h2><p class="section-sub">Dashboard monitoring berdasarkan jumlah program, kategori, dan status pelaksanaan.</p><div class="dashboard">
+<div class="filters"><select><option>2026</option><option>2025</option><option>2024</option></select><select><option>Semua Bulan</option></select><select><option>Semua Gampong</option></select><select><option>Semua Status</option></select></div>
+<div class="kpis"><div class="kpi"><small>Total Program</small><b>—</b></div><div class="kpi"><small>Berjalan dengan Baik</small><b>—</b></div><div class="kpi"><small>Masih Berjalan</small><b>—</b></div><div class="kpi"><small>Perlu Perhatian</small><b>—</b></div><div class="kpi"><small>Mengalami Kendala</small><b>—</b></div></div>
+<div class="charts"><div class="chartbox"><h3>Jumlah Program per Jenis</h3><p>Peternakan, Pertanian, Perikanan, Perkebunan, dan Ekonomi.</p>
+<div class="barrow"><span>Peternakan</span><div class="bar"><i style="width:72%"></i></div><b>—</b></div><div class="barrow"><span>Pertanian</span><div class="bar"><i style="width:82%"></i></div><b>—</b></div><div class="barrow"><span>Perikanan</span><div class="bar"><i style="width:64%"></i></div><b>—</b></div><div class="barrow"><span>Perkebunan</span><div class="bar"><i style="width:76%"></i></div><b>—</b></div><div class="barrow"><span>Ekonomi</span><div class="bar"><i style="width:88%"></i></div><b>—</b></div></div>
+<div class="chartbox"><h3>Status Program</h3><p>Distribusi jumlah program berdasarkan kondisi pelaksanaan.</p><div class="donutwrap"><div class="donut"></div><div class="legend"><div><span class="dot"></span>Berjalan dengan Baik</div><div>● Masih Berjalan</div><div>● Perlu Perhatian</div><div>● Mengalami Kendala</div><div>● Tidak Berjalan</div><div>● Belum Berjalan</div></div></div></div></div>
+<div class="status-note"><b>Status monitoring:</b> Berjalan dengan Baik • Masih Berjalan • Perlu Perhatian • Mengalami Kendala • Tidak Berjalan • Belum Berjalan. <b>Tidak ada data budget pada website ini.</b></div>
+</div></div></section>
+
+<section class="impact"><div class="container"><h2 class="section-title">Community Impact</h2><p class="section-sub">Jumlah penerima manfaat yang dapat diperbarui dari database monitoring.</p><div class="impact-grid">
+<div class="impact-card"><b>—</b><span>Penerima Manfaat Kelompok</span></div><div class="impact-card"><b>—</b><span>Penerima Manfaat Individu</span></div><div class="impact-card"><b>—</b><span>Penerima Manfaat Laki-laki</span></div><div class="impact-card"><b>—</b><span>Penerima Manfaat Perempuan</span></div><div class="impact-card"><b>—</b><span>Instansi / Other</span></div></div></div></section>
+
+<section id="produk"><div class="container"><h2 class="section-title">Produk UMKM</h2><p class="section-sub">Etalase digital produk masyarakat binaan.</p><div class="products">
+<div class="product"><div class="photo">FOTO PRODUK</div><div class="body"><small>KULINER</small><h3>Inabah Bakery</h3><p>Roti & produk olahan</p></div></div>
+<div class="product"><div class="photo">FOTO PRODUK</div><div class="body"><small>PERTANIAN</small><h3>Produk Kelompok Tani</h3><p>Beras • Gampong Pasi Pinang</p></div></div>
+<div class="product"><div class="photo">FOTO PRODUK</div><div class="body"><small>JASA</small><h3>Barbershop Binaan</h3><p>Jasa cukur masyarakat</p></div></div>
+<div class="product"><div class="photo">FOTO PRODUK</div><div class="body"><small>KERJINAN</small><h3>Produk Sewing Group</h3><p>Fashion & jahit</p></div></div></div></div></section>
+
+<section id="galeri" class="white"><div class="container"><h2 class="section-title">Galeri</h2><p class="section-sub">Foto dan berita kegiatan.</p><div class="news"><div class="news-card"><div class="photo">FOTO KEGIATAN</div><div class="body"><h3>Pelaksanaan Program PPM-CSR</h3><p>Dokumentasi kegiatan masyarakat binaan.</p></div></div><div class="news-card"><div class="photo">FOTO KEGIATAN</div><div class="body"><h3>Pengembangan Usaha Masyarakat</h3><p>Aktivitas pemberdayaan dan pendampingan.</p></div></div><div class="news-card"><div class="photo">BERITA</div><div class="body"><h3>Berita & Cerita Binaan</h3><p>Ruang publikasi perkembangan program.</p></div></div></div></div></section>
+
+<footer><div><b>BINAAN CSR</b><br>Digital Masyarakat Binaan<br>Community Development Portal</div><div>Program PPM-CSR PT Mifa Bersaudara</div></footer>
+</body></html>
