@@ -28,16 +28,7 @@ Website digital masyarakat binaan untuk menampilkan informasi program, produk lo
 
 ## Data Sustainability
 
-Dashboard Sustainability Program terhubung ke Google Apps Script API dan menggunakan data:
-
-- Monitoring Code
-- Sustain/No
-- Summary Monev
-- Activity
-- Tahun Budget
-- Deskripsi
-
-Program dihitung berdasarkan **Monitoring Code unik** agar satu program tidak dihitung berulang.
+Dashboard Sustainability Program tetap menggunakan koneksi dan struktur yang ada pada file HTML ini. Tidak ada perubahan pada logika dashboard Sustainability.
 
 Dashboard menampilkan:
 
@@ -48,26 +39,25 @@ Dashboard menampilkan:
 - Belum Monitoring
 - Grafik Summary Monev
 - Grafik Activity
-- Grafik penerima manfaat per gampong (struktur tampilan)
+- Grafik penerima manfaat per gampong
 - Activity × Summary Monev
 
-## Pengembangan Berikutnya
+## Lokasi
 
-Bagian berikut disiapkan untuk dikembangkan menjadi data dinamis:
+Bagian Lokasi tetap menggunakan data `Web_binaan`, kolom `Koordinat Sustain`, dan popup informasi program yang sudah ada. Perubahan pada versi ini hanya pada bentuk titik lokasi di peta:
 
-- Produk UMKM: foto, lokasi gampong, PIC, WhatsApp, stok/status tersedia-habis
-- Peternakan / Perikanan / Pertanian: foto, lokasi, PIC, kontak
-- UMKM Jasa: foto, lokasi, PIC, kontak
-- Lokasi: koordinat, peta interaktif, Google Maps, program per titik, jumlah penerima manfaat
-- Pagu Gampong: filter tahun, gampong, jenis program, pagu, realisasi
-- Community Impact: kelompok, individu, laki-laki, perempuan, instansi/other
-- Galeri: foto kegiatan dan deskripsi singkat
+- 🟢 Masih Berjalan
+- 🔴 Mati
+- 🟠 Tidak Berkembang/Kurang Baik
+- ⚪ Belum Monitoring atau status kosong
+
+Marker dibuat sebagai **titik lokasi kecil (circle marker)**, bukan pin. Klik titik tetap membuka informasi program, koordinat, Google Maps, dan Google Earth seperti sebelumnya.
 
 ## Catatan
 
-File `index.html` adalah halaman utama website dan dapat langsung di-upload ke repository GitHub.
-
-Website publik tidak menampilkan data budget pada dashboard Sustainability. Data budget hanya disiapkan untuk menu **Pagu Gampong** melalui koneksi data terpisah pada tahap pengembangan berikutnya.
+- Layout dan fungsi Sustainability Program tidak diubah.
+- Struktur dan fungsi Lokasi lainnya tidak diubah; hanya tampilan marker lokasi yang dibuat menjadi titik berwarna berdasarkan Summary Monev.
+- Data budget tidak digunakan pada dashboard Sustainability.
 
 ## Deployment
 

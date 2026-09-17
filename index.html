@@ -94,6 +94,28 @@ section{padding:65px 0}
 .map-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .map{height:520px;border:0;background:#e3ebe6;position:relative}
 #locationMap{height:100%;width:100%}
+
+/* PIN LOKASI PROGRAM - warna berdasarkan Summary Monev */
+.location-pin{
+  width:22px;
+  height:22px;
+  border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  border:2px solid #fff;
+  box-shadow:0 2px 7px rgba(0,0,0,.28);
+  position:relative;
+}
+.location-pin::after{
+  content:"";
+  position:absolute;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#fff;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+}
 .map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);flex-wrap:wrap}
 .map-toolbar strong{color:var(--text)}
 .map-btn{display:inline-block;padding:7px 10px;border-radius:8px;background:var(--soft);color:var(--green);font-size:10px;font-weight:800}
@@ -668,6 +690,24 @@ function googleEarthUrl(lat, lng) {
   return `https://earth.google.com/web/@${lat},${lng},1000a,35y,0h,0t,0r`;
 }
 
+function getLocationMarkerColor(value) {
+  const s = String(value || "").toLowerCase().trim();
+
+  if (s.includes("masih berjalan") || s === "baik" || s.includes("baik/berjalan") || s === "berjalan") {
+    return "#087443"; // Masih Berjalan
+  }
+
+  if (s === "mati" || s.includes("mati")) {
+    return "#c84f45"; // Mati
+  }
+
+  if (s.includes("tidak berkembang") || s.includes("kurang baik")) {
+    return "#e3a12b"; // Tidak Berkembang/Kurang Baik
+  }
+
+  return "#7d8782"; // Belum Monitoring / status kosong
+}
+
 function updateLocationSection(data) {
   const mapElement = document.getElementById("locationMap");
   const withCoordElement = document.getElementById("locationWithCoord");
@@ -777,8 +817,21 @@ function updateLocationSection(data) {
     const { row, coordinate, description, recipient } = item;
     const year = cleanValue(row["Tahun Budget"]);
     const summary = cleanValue(row["Summary Monev"]);
+    const markerColor = getLocationMarkerColor(summary);
 
-    const marker = L.marker([coordinate.lat, coordinate.lng]);
+    // Pin lokasi: warna mengikuti Summary Monev.
+    const markerIcon = L.divIcon({
+      className: "location-pin-wrap",
+      html: `<div class="location-pin" style="background:${markerColor}"></div>`,
+      iconSize: [22, 22],
+      iconAnchor: [11, 22],
+      popupAnchor: [0, -22],
+      tooltipAnchor: [0, -22]
+    });
+
+    const marker = L.marker([coordinate.lat, coordinate.lng], {
+      icon: markerIcon
+    });
 
     const popup = `
       <div class="location-popup">
