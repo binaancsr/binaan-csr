@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Binaan CSR | Community Development Portal</title>
 <meta name="description" content="Digital Masyarakat Binaan — Community Development Portal">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 :root{
   --green:#087443;--green2:#0d8752;--dark:#073c29;--soft:#eef6f1;
@@ -77,11 +78,34 @@ section{padding:65px 0}
 .status-note{margin-top:17px;padding:12px;border-radius:9px;background:var(--soft);font-size:10px;color:#496057}
 
 /* LOCATION */
-.locations{display:grid;grid-template-columns:1.15fr .85fr;gap:17px;margin-top:23px}
-.map{min-height:330px;border-radius:16px;background:#e3ebe6;border:1px solid var(--line);display:grid;place-items:center;text-align:center;color:#60766c;font-size:12px}
+.locations{display:grid;grid-template-columns:1.55fr .85fr;gap:17px;margin-top:23px}
+.map-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.map{height:520px;border:0;background:#e3ebe6;position:relative}
+#locationMap{height:100%;width:100%}
+.map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);flex-wrap:wrap}
+.map-toolbar strong{color:var(--text)}
+.map-btn{display:inline-block;padding:7px 10px;border-radius:8px;background:var(--soft);color:var(--green);font-size:10px;font-weight:800}
+.location-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.location-stat{background:var(--soft);border-radius:11px;padding:13px}
+.location-stat b{display:block;color:var(--green);font-size:20px;margin-bottom:3px}
+.location-stat span{font-size:9px;color:var(--muted)}
 .village-list{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.village-list h3{margin:0 0 5px;font-size:15px}
 .village{padding:13px 0;border-bottom:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;gap:15px}
 .village:last-child{border:0}.village span{color:var(--muted)}
+.location-note{margin-top:14px;padding:12px;border-radius:10px;background:#fff7e6;border:1px solid #f0dfb6;color:#765d20;font-size:10px;line-height:1.6}
+.location-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;height:8cm;max-height:8cm;position:relative}
+.location-table{width:100%;min-width:620px;border-collapse:collapse;font-size:11px}
+.location-table th,.location-table td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+.location-table th{background:#f1f5f3;color:#0b3b2b;font-size:10px;white-space:nowrap;position:sticky;top:0;z-index:3}
+.location-table td:nth-child(n+2){text-align:center;font-weight:700}
+.location-table tbody tr:hover{background:#f8fbf9}
+.leaflet-popup-content{font-family:Inter,Segoe UI,Arial,sans-serif;font-size:11px;line-height:1.5}
+.location-popup h4{font-size:13px;margin:0 0 8px;color:#073c29}
+.location-popup .meta{margin:3px 0}.location-popup .meta b{color:#496057}
+.location-popup .popup-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.location-popup .popup-actions a{padding:6px 8px;border-radius:7px;background:#eef6f1;color:#087443;font-weight:800;font-size:9px}
+@media(max-width:700px){.locations{grid-template-columns:1fr}.map{height:400px}.location-stats{grid-template-columns:1fr 1fr}}
 
 /* IMPACT */
 .impact{background:#edf5f1}.impact-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:22px}
@@ -209,17 +233,51 @@ footer strong{font-size:14px}
 <section id="lokasi">
   <div class="container">
     <h2 class="section-title">Lokasi</h2>
-    <p class="section-sub">Sebaran lokasi program masyarakat binaan berdasarkan koordinat.</p>
+
     <div class="locations">
-      <div class="map">PETA INTERAKTIF<br><small>Koordinat program akan dihubungkan ke peta & Google Maps</small></div>
-      <div class="village-list">
-        <h3 style="margin:0 0 5px;font-size:15px">Ringkasan Gampong</h3>
-        <p class="section-sub">Contoh tampilan yang nantinya diambil dari database.</p>
-        <div class="village"><b>Gampong A</b><span>5 Program</span></div>
-        <div class="village"><b>Gampong B</b><span>8 Program</span></div>
-        <div class="village"><b>Gampong C</b><span>4 Program</span></div>
-        <div class="village"><b>Gampong D</b><span>6 Program</span></div>
+      <div class="map-card">
+        <div class="map"><div id="locationMap"></div></div>
+        <div class="map-toolbar">
+          <div><strong>Peta Lokasi Program</strong> • Klik titik untuk melihat informasi program.</div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <a class="map-btn" href="https://www.google.com/maps" target="_blank" rel="noopener">Buka Google Maps</a>
+            <a class="map-btn" href="https://earth.google.com/web/" target="_blank" rel="noopener">Buka Google Earth</a>
+          </div>
+        </div>
       </div>
+
+      <div class="village-list">
+        <h3>Ringkasan Lokasi</h3>
+
+        <div class="location-stats">
+          <div class="location-stat">
+            <b id="locationWithCoord">0</b>
+            <span>Deskripsi dengan koordinat</span>
+          </div>
+          <div class="location-stat">
+            <b id="locationWithoutCoord">0</b>
+            <span>Deskripsi belum memiliki koordinat</span>
+          </div>
+        </div>
+
+        <div class="location-note" id="locationNote">Menyiapkan data lokasi...</div>
+
+      </div>
+    </div>
+
+    <div class="location-table-wrap">
+      <table class="location-table">
+        <thead>
+          <tr>
+            <th>Penerima Manfaat / Lokasi</th>
+            <th>Ada Lokasi</th>
+            <th>Belum Ada Koordinat</th>
+          </tr>
+        </thead>
+        <tbody id="locationSummaryBody">
+          <tr><td colspan="3" style="text-align:center;color:var(--muted)">Menyiapkan data...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -382,6 +440,8 @@ footer strong{font-size:14px}
   <div>Produk Lokal • Program PPM-CSR</div>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
 <!-- SUSTAINABILITY API -->
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
@@ -402,12 +462,183 @@ async function loadSustainabilityData() {
 
     sustainabilityData = data;
 
+    updateLocationSection(sustainabilityData);
+
     buildSustainabilityFilters(sustainabilityData);
     updateSustainabilityDashboard(sustainabilityData);
     setupSustainabilityFilters();
   } catch (error) {
     console.error("API Error:", error);
   }
+}
+
+let locationMap = null;
+let locationLayer = null;
+
+function parseCoordinate(value) {
+  const text = cleanValue(value);
+  if (!text) return null;
+
+  // AppSheet Location umum: "4.135163, 96.168977"
+  const match = text.match(/(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)/);
+  if (!match) return null;
+
+  const lat = Number(match[1]);
+  const lng = Number(match[2]);
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+
+  return { lat, lng };
+}
+
+function googleMapsUrl(lat, lng) {
+  return `https://www.google.com/maps?q=${lat},${lng}`;
+}
+
+function googleEarthUrl(lat, lng) {
+  return `https://earth.google.com/web/@${lat},${lng},1000a,35y,0h,0t,0r`;
+}
+
+function updateLocationSection(data) {
+  const mapElement = document.getElementById("locationMap");
+  const withCoordElement = document.getElementById("locationWithCoord");
+  const withoutCoordElement = document.getElementById("locationWithoutCoord");
+  const noteElement = document.getElementById("locationNote");
+  const tableBody = document.getElementById("locationSummaryBody");
+
+  if (!mapElement) return;
+
+  // Pastikan hanya data dari Web_binaan yang dipakai.
+  const records = Array.isArray(data) ? data : [];
+
+  const withCoordinate = [];
+  const withoutCoordinate = [];
+  const byRecipient = {};
+
+  records.forEach(row => {
+    const description = cleanValue(row["Deskripsi"]);
+    const recipient = cleanValue(row["Penerima Manfaat"]);
+    const coordinate = parseCoordinate(row["Koordinat Sustain"]);
+
+    // Hanya hitung record yang mempunyai Deskripsi.
+    if (!description) return;
+
+    const key = recipient || "Belum diisi";
+
+    if (!byRecipient[key]) {
+      byRecipient[key] = { withCoord: 0, withoutCoord: 0 };
+    }
+
+    if (coordinate) {
+      withCoordinate.push({ row, coordinate, description, recipient });
+      byRecipient[key].withCoord += 1;
+    } else {
+      withoutCoordinate.push({ row, description, recipient });
+      byRecipient[key].withoutCoord += 1;
+    }
+  });
+
+  if (withCoordElement) {
+    withCoordElement.textContent = withCoordinate.length.toLocaleString("id-ID");
+  }
+
+  if (withoutCoordElement) {
+    withoutCoordElement.textContent = withoutCoordinate.length.toLocaleString("id-ID");
+  }
+
+  if (noteElement) {
+    noteElement.innerHTML = `<strong>${withoutCoordinate.length.toLocaleString("id-ID")} deskripsi</strong> belum memiliki koordinat. Data tersebut belum ditampilkan sebagai titik di peta. Koordinat dapat diisi melalui AppSheet pada kolom <strong>Koordinat Sustain</strong>.`;
+  }
+
+  // Tabel ringkasan penerima manfaat/lokasi.
+  if (tableBody) {
+    tableBody.innerHTML = "";
+
+    const entries = Object.entries(byRecipient)
+      .sort((a, b) => a[0].localeCompare(b[0], "id", { sensitivity: "base", numeric: true }));
+
+    if (entries.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--muted)">Belum ada data lokasi.</td></tr>`;
+    } else {
+      entries.forEach(([recipient, counts]) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(recipient)}</td>
+          <td>${counts.withCoord.toLocaleString("id-ID")}</td>
+          <td>${counts.withoutCoord.toLocaleString("id-ID")}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+  }
+
+  // Inisialisasi peta satu kali.
+  if (!window.L) {
+    noteElement && (noteElement.textContent = "Peta belum dapat dimuat. Silakan periksa koneksi internet.");
+    return;
+  }
+
+  if (!locationMap) {
+    locationMap = L.map(mapElement, {
+      scrollWheelZoom: true,
+      zoomControl: true
+    });
+
+    // Basemap utama menggunakan Esri World Street Map agar
+    // latar peta tetap tampil pada halaman publik.
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri'
+    }).addTo(locationMap);
+
+    locationLayer = L.layerGroup().addTo(locationMap);
+  } else {
+    locationLayer.clearLayers();
+  }
+
+  if (withCoordinate.length === 0) {
+    locationMap.setView([4.135163, 96.168977], 12);
+    setTimeout(() => locationMap.invalidateSize(), 150);
+    return;
+  }
+
+  const bounds = [];
+
+  withCoordinate.forEach(item => {
+    const { row, coordinate, description, recipient } = item;
+    const year = cleanValue(row["Tahun Budget"]);
+    const summary = cleanValue(row["Summary Monev"]);
+
+    const marker = L.marker([coordinate.lat, coordinate.lng]);
+
+    const popup = `
+      <div class="location-popup">
+        <div class="meta"><b>Deskripsi Program:</b></div>
+        <h4>${escapeHtml(description)}</h4>
+        <div class="meta"><b>Tahun Program:</b> ${escapeHtml(year || "-")}</div>
+        <div class="meta"><b>Lokasi:</b> ${escapeHtml(recipient || "-")}</div>
+        <div class="meta"><b>Summary Monev:</b> ${escapeHtml(summary || "-")}</div>
+        <div class="meta"><b>Koordinat:</b> ${coordinate.lat.toFixed(6)}, ${coordinate.lng.toFixed(6)}</div>
+        <div class="popup-actions">
+          <a href="${googleMapsUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Maps</a>
+          <a href="${googleEarthUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Earth</a>
+        </div>
+      </div>
+    `;
+
+    marker.bindPopup(popup, { maxWidth: 320 });
+    marker.bindTooltip(description, { direction: "top", offset: [0, -8] });
+    marker.addTo(locationLayer);
+    bounds.push([coordinate.lat, coordinate.lng]);
+  });
+
+  locationMap.fitBounds(bounds, {
+    padding: [30, 30],
+    maxZoom: 15
+  });
+
+  setTimeout(() => locationMap.invalidateSize(), 150);
 }
 
 function getCountMonev(row) {
