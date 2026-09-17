@@ -87,4 +87,340 @@ footer{background:#0a3223;color:#dce9e2;padding:35px 5%;display:flex;justify-con
 <section id="galeri" class="white"><div class="container"><h2 class="section-title">Galeri</h2><p class="section-sub">Foto dan berita kegiatan.</p><div class="news"><div class="news-card"><div class="photo">FOTO KEGIATAN</div><div class="body"><h3>Pelaksanaan Program PPM-CSR</h3><p>Dokumentasi kegiatan masyarakat binaan.</p></div></div><div class="news-card"><div class="photo">FOTO KEGIATAN</div><div class="body"><h3>Pengembangan Usaha Masyarakat</h3><p>Aktivitas pemberdayaan dan pendampingan.</p></div></div><div class="news-card"><div class="photo">BERITA</div><div class="body"><h3>Berita & Cerita Binaan</h3><p>Ruang publikasi perkembangan program.</p></div></div></div></div></section>
 
 <footer><div><b>BINAAN CSR</b><br>Digital Masyarakat Binaan<br>Community Development Portal</div><div>Program PPM-CSR PT Mifa Bersaudara</div></footer>
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
+
+async function loadSustainabilityData() {
+  try {
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data dari Google Sheet");
+    }
+
+    const data = await response.json();
+
+    updateSustainabilityDashboard(data);
+
+  } catch (error) {
+    console.error("API Error:", error);
+  }
+}
+
+function normalizeStatus(status) {
+  const s = String(status || "").toLowerCase().trim();
+
+  // Prioritaskan status khusus terlebih dahulu
+  if (s.includes("tidak berjalan")) {
+    return "Tidak Berjalan";
+  }
+
+  if (s.includes("mengalami kendala") || s.includes("kendala")) {
+    return "Mengalami Kendala";
+  }
+
+  if (
+    s.includes("kurang baik") ||
+    s.includes("tidak berkembang")
+  ) {
+    return "Perlu Perhatian";
+  }
+
+  if (s.includes("masih berjalan")) {
+    return "Masih Berjalan";
+  }
+
+  if (
+    s.includes("baik") ||
+    s === "berjalan" ||
+    s === "baik/berjalan"
+  ) {
+    return "Berjalan dengan Baik";
+  }
+
+  return "Belum Berjalan";
+}
+
+function updateSustainabilityDashboard(data) {
+
+  const section = document.querySelector("#sustainability");
+
+  if (!section) return;
+
+
+  /*
+   * =====================================================
+   * 1. FILTER DATA SUSTAINABILITY
+   * =====================================================
+   */
+
+  let records = data.filter(row => {
+
+    const sustain = String(row["Sustain/No"] || "")
+      .toLowerCase()
+      .trim();
+
+    return sustain !== "no";
+  });
+
+
+  /*
+   * =====================================================
+   * 2. HITUNG PROGRAM UNIK
+   * =====================================================
+   *
+   * Monitoring Code digunakan sebagai identitas program
+   * agar satu program tidak dihitung berkali-kali.
+   */
+
+  const uniquePrograms = new Map();
+
+  records.forEach((row, index) => {
+
+    let code = String(row["Monitoring Code"] || "").trim();
+
+    if (!code) {
+      code =
+        String(row["Activity"] || "") +
+        "|" +
+        String(row["Deskripsi"] || "") +
+        "|" +
+        String(row["Tahun Budget"] || "") +
+        "|" +
+        index;
+    }
+
+    if (!uniquePrograms.has(code)) {
+      uniquePrograms.set(code, row);
+    }
+
+  });
+
+
+  const programs = Array.from(uniquePrograms.values());
+
+
+  /*
+   * =====================================================
+   * 3. STATUS PROGRAM
+   * =====================================================
+   */
+
+  const statusCount = {
+    "Berjalan dengan Baik": 0,
+    "Masih Berjalan": 0,
+    "Perlu Perhatian": 0,
+    "Mengalami Kendala": 0,
+    "Tidak Berjalan": 0,
+    "Belum Berjalan": 0
+  };
+
+
+  programs.forEach(row => {
+
+    const rawStatus =
+      row["Status Monitoring (Sustain)"] ||
+      row["Hasil Monev Sustain"] ||
+      row["Summary Monev"] ||
+      "";
+
+    const status = normalizeStatus(rawStatus);
+
+    statusCount[status]++;
+
+  });
+
+
+  /*
+   * =====================================================
+   * 4. KPI
+   * =====================================================
+   */
+
+  const kpis = section.querySelectorAll(".kpi b");
+
+  if (kpis.length >= 5) {
+
+    kpis[0].textContent = programs.length;
+
+    kpis[1].textContent =
+      statusCount["Berjalan dengan Baik"];
+
+    kpis[2].textContent =
+      statusCount["Masih Berjalan"];
+
+    kpis[3].textContent =
+      statusCount["Perlu Perhatian"];
+
+    kpis[4].textContent =
+      statusCount["Mengalami Kendala"];
+  }
+
+
+  /*
+   * =====================================================
+   * 5. JUMLAH PROGRAM PER JENIS
+   * =====================================================
+   */
+
+  const categories = [
+    "Peternakan",
+    "Pertanian",
+    "Perikanan",
+    "Perkebunan",
+    "Ekonomi"
+  ];
+
+
+  const categoryCount = {};
+
+  categories.forEach(category => {
+    categoryCount[category] = 0;
+  });
+
+
+  programs.forEach(row => {
+
+    const activity =
+      String(row["Activity"] || "")
+      .trim()
+      .toLowerCase();
+
+    categories.forEach(category => {
+
+      if (activity === category.toLowerCase()) {
+        categoryCount[category]++;
+      }
+
+    });
+
+  });
+
+
+  /*
+   * =====================================================
+   * 6. UPDATE BAR CHART
+   * =====================================================
+   */
+
+  const bars = section.querySelectorAll(".barrow");
+
+  const maxValue =
+    Math.max(...Object.values(categoryCount), 1);
+
+
+  bars.forEach(bar => {
+
+    const labelElement = bar.querySelector("span");
+
+    if (!labelElement) return;
+
+    const category =
+      labelElement.textContent.trim();
+
+    if (!categoryCount.hasOwnProperty(category)) {
+      return;
+    }
+
+    const value =
+      categoryCount[category];
+
+    const width =
+      (value / maxValue) * 100;
+
+    const barElement =
+      bar.querySelector(".bar i");
+
+    const valueElement =
+      bar.querySelector("b");
+
+    if (barElement) {
+      barElement.style.width = width + "%";
+    }
+
+    if (valueElement) {
+      valueElement.textContent = value;
+    }
+
+  });
+
+
+  /*
+   * =====================================================
+   * 7. UPDATE DONUT CHART
+   * =====================================================
+   */
+
+  const donut =
+    section.querySelector(".donut");
+
+  if (donut) {
+
+    const total =
+      programs.length || 1;
+
+    const good =
+      statusCount["Berjalan dengan Baik"];
+
+    const running =
+      statusCount["Masih Berjalan"];
+
+    const attention =
+      statusCount["Perlu Perhatian"];
+
+    const problem =
+      statusCount["Mengalami Kendala"];
+
+    const stopped =
+      statusCount["Tidak Berjalan"];
+
+    const notStarted =
+      statusCount["Belum Berjalan"];
+
+
+    const p1 = good / total * 100;
+    const p2 = running / total * 100;
+    const p3 = attention / total * 100;
+    const p4 = problem / total * 100;
+    const p5 = stopped / total * 100;
+
+
+    donut.style.background =
+      `conic-gradient(
+        #1f7a4d 0 ${p1}%,
+        #5da67a ${p1}% ${p1 + p2}%,
+        #e4a11b ${p1 + p2}% ${p1 + p2 + p3}%,
+        #d95c5c ${p1 + p2 + p3}% ${p1 + p2 + p3 + p4}%,
+        #777 ${p1 + p2 + p3 + p4}% ${p1 + p2 + p3 + p4 + p5}%,
+        #d9d9d9 ${p1 + p2 + p3 + p4 + p5}% 100%
+      )`;
+
+  }
+
+
+  /*
+   * =====================================================
+   * 8. TANDA DATA SUDAH TERHUBUNG
+   * =====================================================
+   */
+
+  console.log(
+    "Sustainability berhasil dimuat:",
+    programs.length,
+    "program"
+  );
+
+}
+
+
+/*
+ * Jalankan ketika halaman selesai dimuat
+ */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  loadSustainabilityData
+);
+
+</script>
 </body></html>
