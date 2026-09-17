@@ -162,213 +162,357 @@ function getCountMonev(row) {
 
 function updateSustainabilityDashboard(data) {
 
-  const section =
-    document.querySelector("#sustainability");
+  const section = document.querySelector("#sustainability");
 
   if (!section) return;
 
 
-  /*
-   * =====================================================
-   * 1. FILTER DATA SUSTAINABILITY
-   * =====================================================
-   */
+  // =====================================================
+  // 1. FILTER DATA
+  // =====================================================
 
-  let records = data.filter(row => {
+  const records = data.filter(row => {
 
-    const sustain =
-      String(row["Sustain/No"] || "")
+    const sustain = String(row["Sustain/No"] || "")
       .toLowerCase()
       .trim();
 
     return sustain !== "no";
+
   });
 
 
-  /*
-   * =====================================================
-   * 2. HITUNG BERDASARKAN COUNT MONEV
-   * =====================================================
-   *
-   * Tidak lagi menggunakan Monitoring Code unik.
-   *
-   * Angka mengikuti Count Monev dari Excel.
-   */
+  // =====================================================
+  // 2. COUNT MONEV
+  // =====================================================
+
+  function getCountMonev(row) {
+
+    const value = Number(row["Count Monev"]);
+
+    if (isNaN(value)) return 0;
+
+    return value;
+
+  }
+
+
+  // =====================================================
+  // 3. NORMALISASI SUMMARY MONEV
+  // =====================================================
+
+  function normalizeSummary(value) {
+
+    const s = String(value || "")
+      .toLowerCase()
+      .trim();
+
+
+    if (s.includes("belum monitoring")) {
+      return "Belum Monitoring";
+    }
+
+
+    if (
+      s.includes("tidak berkembang") ||
+      s.includes("kurang baik")
+    ) {
+      return "Tidak Berkembang";
+    }
+
+
+    if (
+      s === "mati" ||
+      s.includes("mati")
+    ) {
+      return "Mati";
+    }
+
+
+    if (s.includes("masih berjalan")) {
+      return "Masih Berjalan";
+    }
+
+
+    if (
+      s === "baik" ||
+      s.includes("baik/berjalan") ||
+      s === "berjalan"
+    ) {
+      return "Masih Berjalan";
+    }
+
+
+    // Data kosong dianggap belum monitoring
+    if (s === "") {
+      return "Belum Monitoring";
+    }
+
+
+    return "Belum Monitoring";
+
+  }
+
+
+  // =====================================================
+  // 4. HITUNG SUMMARY MONEV
+  // =====================================================
 
   let totalProgram = 0;
 
-  let masihBerjalan = 0;
+  const summaryCount = {
 
-  let mati = 0;
+    "Masih Berjalan": 0,
 
-  let tidakBerkembang = 0;
+    "Mati": 0,
 
-  let belumMonitoring = 0;
+    "Tidak Berkembang": 0,
+
+    "Belum Monitoring": 0
+
+  };
 
 
   records.forEach(row => {
 
-    const count =
-      getCountMonev(row);
+    const count = getCountMonev(row);
 
-    if (count <= 0) {
-      return;
-    }
+    if (count <= 0) return;
 
 
     const summary =
-      normalizeSummary(
-        row["Summary Monev"]
-      );
+      normalizeSummary(row["Summary Monev"]);
 
 
     totalProgram += count;
 
 
-    if (summary === "Masih Berjalan") {
-
-      masihBerjalan += count;
-
-    }
-
-    else if (summary === "Mati") {
-
-      mati += count;
-
-    }
-
-    else if (
-      summary ===
-      "Tidak Berkembang / Kurang Baik"
+    if (
+      summaryCount.hasOwnProperty(summary)
     ) {
 
-      tidakBerkembang += count;
-
-    }
-
-    else if (
-      summary ===
-      "Belum Monitoring"
-    ) {
-
-      belumMonitoring += count;
+      summaryCount[summary] += count;
 
     }
 
   });
 
 
-  /*
-   * =====================================================
-   * 3. UPDATE KPI
-   * =====================================================
-   */
+  // =====================================================
+  // 5. UPDATE KPI
+  // =====================================================
 
   const kpis =
     section.querySelectorAll(".kpi b");
 
+  const labels =
+    section.querySelectorAll(".kpi small");
+
 
   if (kpis.length >= 5) {
-
-    /*
-     * Total Program
-     */
 
     kpis[0].textContent =
       totalProgram.toLocaleString("id-ID");
 
 
-    /*
-     * KPI kedua
-     *
-     * Karena layout HTML lama masih memakai
-     * "Berjalan dengan Baik", kita isi dengan
-     * Masih Berjalan agar sesuai data Summary Monev.
-     */
-
     kpis[1].textContent =
-      masihBerjalan.toLocaleString("id-ID");
+      summaryCount["Masih Berjalan"]
+      .toLocaleString("id-ID");
 
-
-    /*
-     * KPI ketiga
-     */
 
     kpis[2].textContent =
-      mati.toLocaleString("id-ID");
+      summaryCount["Mati"]
+      .toLocaleString("id-ID");
 
-
-    /*
-     * KPI keempat
-     */
 
     kpis[3].textContent =
-      tidakBerkembang.toLocaleString("id-ID");
+      summaryCount["Tidak Berkembang"]
+      .toLocaleString("id-ID");
 
-
-    /*
-     * KPI kelima
-     */
 
     kpis[4].textContent =
-      belumMonitoring.toLocaleString("id-ID");
+      summaryCount["Belum Monitoring"]
+      .toLocaleString("id-ID");
 
   }
 
 
-  /*
-   * =====================================================
-   * 4. UBAH JUDUL KPI AGAR SESUAI SUMMARY MONEV
-   * =====================================================
-   */
+  if (labels.length >= 5) {
 
-  const kpiLabels =
-    section.querySelectorAll(".kpi small");
-
-
-  if (kpiLabels.length >= 5) {
-
-    kpiLabels[0].textContent =
+    labels[0].textContent =
       "Total Program";
 
-    kpiLabels[1].textContent =
+    labels[1].textContent =
       "Masih Berjalan";
 
-    kpiLabels[2].textContent =
+    labels[2].textContent =
       "Mati";
 
-    kpiLabels[3].textContent =
+    labels[3].textContent =
       "Tidak Berkembang / Kurang Baik";
 
-    kpiLabels[4].textContent =
+    labels[4].textContent =
       "Belum Monitoring";
 
   }
 
 
+  // =====================================================
+  // 6. UPDATE GRAFIK SUMMARY MONEV
+  // =====================================================
+
   /*
-   * =====================================================
-   * 5. JUMLAH PROGRAM PER JENIS
-   * =====================================================
-   *
-   * Tetap menggunakan Count Monev.
+   * Cari chart berdasarkan judul "Summary Monev"
    */
 
-  const categories = [
+  const chartBoxes =
+    section.querySelectorAll(".chartbox");
+
+
+  let summaryChart = null;
+
+
+  chartBoxes.forEach(box => {
+
+    const title = box.querySelector("h3");
+
+    if (!title) return;
+
+
+    if (
+      title.textContent
+        .toLowerCase()
+        .includes("summary monev")
+    ) {
+
+      summaryChart = box;
+
+    }
+
+  });
+
+
+  if (summaryChart) {
+
+    const summaryBars =
+      summaryChart.querySelectorAll(".barrow");
+
+
+    summaryBars.forEach(bar => {
+
+      const label =
+        bar.querySelector("span");
+
+
+      const valueElement =
+        bar.querySelector("b");
+
+
+      const barElement =
+        bar.querySelector(".bar i");
+
+
+      if (!label) return;
+
+
+      const name =
+        label.textContent
+          .trim()
+          .toLowerCase();
+
+
+      let value = 0;
+
+
+      if (
+        name.includes("masih berjalan")
+      ) {
+
+        value =
+          summaryCount["Masih Berjalan"];
+
+      }
+
+      else if (
+        name === "mati"
+      ) {
+
+        value =
+          summaryCount["Mati"];
+
+      }
+
+      else if (
+        name.includes("tidak berkembang") ||
+        name.includes("kurang baik")
+      ) {
+
+        value =
+          summaryCount["Tidak Berkembang"];
+
+      }
+
+      else if (
+        name.includes("belum monitoring")
+      ) {
+
+        value =
+          summaryCount["Belum Monitoring"];
+
+      }
+
+
+      if (valueElement) {
+
+        valueElement.textContent =
+          value.toLocaleString("id-ID");
+
+      }
+
+
+      if (barElement) {
+
+        const width =
+          totalProgram > 0
+            ? (value / totalProgram) * 100
+            : 0;
+
+
+        barElement.style.width =
+          width + "%";
+
+      }
+
+    });
+
+  }
+
+
+  // =====================================================
+  // 7. ACTIVITY
+  // =====================================================
+
+  const activities = [
+
     "Peternakan",
-    "Pertanian",
+
     "Perikanan",
+
+    "Pertanian",
+
     "Perkebunan",
+
     "Ekonomi"
+
   ];
 
 
-  const categoryCount = {};
+  const activityCount = {};
 
 
-  categories.forEach(category => {
+  activities.forEach(activity => {
 
-    categoryCount[category] = 0;
+    activityCount[activity] = 0;
 
   });
 
@@ -388,14 +532,13 @@ function updateSustainabilityDashboard(data) {
     if (count <= 0) return;
 
 
-    categories.forEach(category => {
+    activities.forEach(name => {
 
       if (
-        activity ===
-        category.toLowerCase()
+        activity === name.toLowerCase()
       ) {
 
-        categoryCount[category] += count;
+        activityCount[name] += count;
 
       }
 
@@ -404,87 +547,94 @@ function updateSustainabilityDashboard(data) {
   });
 
 
-  /*
-   * =====================================================
-   * 6. UPDATE BAR CHART
-   * =====================================================
-   */
+  // =====================================================
+  // 8. UPDATE GRAFIK ACTIVITY
+  // =====================================================
 
-  const bars =
-    section.querySelectorAll(".barrow");
+  let activityChart = null;
 
 
-  const maxValue =
-    Math.max(
-      ...Object.values(categoryCount),
-      1
-    );
+  chartBoxes.forEach(box => {
 
+    const title = box.querySelector("h3");
 
-  bars.forEach(bar => {
-
-    const labelElement =
-      bar.querySelector("span");
-
-
-    if (!labelElement) return;
-
-
-    const category =
-      labelElement.textContent.trim();
+    if (!title) return;
 
 
     if (
-      !Object.prototype.hasOwnProperty.call(
-        categoryCount,
-        category
-      )
+      title.textContent
+        .toLowerCase()
+        .trim() === "activity"
     ) {
 
-      return;
-
-    }
-
-
-    const value =
-      categoryCount[category];
-
-
-    const width =
-      (value / maxValue) * 100;
-
-
-    const barElement =
-      bar.querySelector(".bar i");
-
-
-    const valueElement =
-      bar.querySelector("b");
-
-
-    if (barElement) {
-
-      barElement.style.width =
-        width + "%";
-
-    }
-
-
-    if (valueElement) {
-
-      valueElement.textContent =
-        value.toLocaleString("id-ID");
+      activityChart = box;
 
     }
 
   });
 
 
-  /*
-   * =====================================================
-   * 7. UPDATE DONUT CHART
-   * =====================================================
-   */
+  if (activityChart) {
+
+    const activityBars =
+      activityChart.querySelectorAll(".barrow");
+
+
+    const maxActivity =
+      Math.max(
+        ...Object.values(activityCount),
+        1
+      );
+
+
+    activityBars.forEach(bar => {
+
+      const label =
+        bar.querySelector("span");
+
+
+      const valueElement =
+        bar.querySelector("b");
+
+
+      const barElement =
+        bar.querySelector(".bar i");
+
+
+      if (!label) return;
+
+
+      const name =
+        label.textContent.trim();
+
+
+      const value =
+        activityCount[name] || 0;
+
+
+      if (valueElement) {
+
+        valueElement.textContent =
+          value.toLocaleString("id-ID");
+
+      }
+
+
+      if (barElement) {
+
+        barElement.style.width =
+          (value / maxActivity * 100) + "%";
+
+      }
+
+    });
+
+  }
+
+
+  // =====================================================
+  // 9. UPDATE DONUT
+  // =====================================================
 
   const donut =
     section.querySelector(".donut");
@@ -496,8 +646,24 @@ function updateSustainabilityDashboard(data) {
       totalProgram || 1;
 
 
+    const running =
+      summaryCount["Masih Berjalan"];
+
+
+    const mati =
+      summaryCount["Mati"];
+
+
+    const tidakBerkembang =
+      summaryCount["Tidak Berkembang"];
+
+
+    const belumMonitoring =
+      summaryCount["Belum Monitoring"];
+
+
     const p1 =
-      masihBerjalan / total * 100;
+      running / total * 100;
 
 
     const p2 =
@@ -514,7 +680,7 @@ function updateSustainabilityDashboard(data) {
 
     donut.style.background =
       `conic-gradient(
-        #1f7a4d 0 ${p1}%,
+        #087443 0 ${p1}%,
         #777 ${p1}% ${p1 + p2}%,
         #e4a11b ${p1 + p2}% ${p1 + p2 + p3}%,
         #d9d9d9 ${p1 + p2 + p3}% 100%
@@ -522,13 +688,31 @@ function updateSustainabilityDashboard(data) {
 
 
     /*
-     * Angka total di tengah donut
+     * Update angka TOTAL PROGRAM
      */
 
-    const donutAfter =
-      document.createElement("style");
+    let donutStyle =
+      document.getElementById(
+        "dynamic-donut-style"
+      );
 
-    donutAfter.textContent = `
+
+    if (!donutStyle) {
+
+      donutStyle =
+        document.createElement("style");
+
+      donutStyle.id =
+        "dynamic-donut-style";
+
+      document.head.appendChild(
+        donutStyle
+      );
+
+    }
+
+
+    donutStyle.textContent = `
       .donut::after {
         content: "TOTAL\\A PROGRAM\\A ${totalProgram.toLocaleString("id-ID")}";
         white-space: pre;
@@ -537,19 +721,15 @@ function updateSustainabilityDashboard(data) {
       }
     `;
 
-    document.head.appendChild(donutAfter);
-
   }
 
 
-  /*
-   * =====================================================
-   * 8. LOG HASIL
-   * =====================================================
-   */
+  // =====================================================
+  // 10. CONSOLE
+  // =====================================================
 
   console.log(
-    "Sustainability berhasil dimuat:"
+    "===== SUSTAINABILITY ====="
   );
 
   console.log(
@@ -559,37 +739,25 @@ function updateSustainabilityDashboard(data) {
 
   console.log(
     "Masih Berjalan:",
-    masihBerjalan
+    summaryCount["Masih Berjalan"]
   );
 
   console.log(
     "Mati:",
-    mati
+    summaryCount["Mati"]
   );
 
   console.log(
-    "Tidak Berkembang / Kurang Baik:",
-    tidakBerkembang
+    "Tidak Berkembang:",
+    summaryCount["Tidak Berkembang"]
   );
 
   console.log(
     "Belum Monitoring:",
-    belumMonitoring
+    summaryCount["Belum Monitoring"]
   );
 
 }
-
-
-/*
- * =====================================================
- * JALANKAN KETIKA HALAMAN SELESAI DIMUAT
- * =====================================================
- */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  loadSustainabilityData
-);
 
 </script>
 </body></html>
