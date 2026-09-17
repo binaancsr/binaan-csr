@@ -77,11 +77,59 @@ section{padding:65px 0}
 .legend{font-size:10px;line-height:2}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px}
 .status-note{margin-top:17px;padding:12px;border-radius:9px;background:var(--soft);font-size:10px;color:#496057}
 
+/* COMMUNITY IMPACT */
+.impact-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.impact-tools input,.impact-tools select{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;color:#496057;font-size:12px;min-width:230px;outline:none}
+.impact-tools input:focus,.impact-tools select:focus{border-color:var(--green)}
+.impact-table-wrap{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.impact-table-scroll{height:302px;overflow:auto}
+.impact-table{width:100%;border-collapse:collapse;min-width:900px;font-size:11px}
+.impact-table th{position:sticky;top:0;z-index:2;background:#edf4f0;color:var(--dark);text-align:left;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.impact-table td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+.impact-table tbody tr:nth-child(even){background:#fafcfb}
+.impact-count-note{margin-top:10px;font-size:10px;color:var(--muted)}
+
 /* LOCATION */
 .locations{display:grid;grid-template-columns:1.55fr .85fr;gap:17px;margin-top:23px}
 .map-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .map{height:520px;border:0;background:#e3ebe6;position:relative}
 #locationMap{height:100%;width:100%}
+.location-legend{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  z-index:1000;
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(11,59,43,.12);
+  border-radius:10px;
+  padding:9px 11px;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+  font-size:10px;
+  line-height:1.5;
+  color:#496057;
+  pointer-events:none;
+}
+.location-legend-title{
+  font-weight:800;
+  color:#0b3b2b;
+  margin-bottom:5px;
+}
+.location-legend-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:2px 0;
+  white-space:nowrap;
+}
+.location-legend-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  display:inline-block;
+  flex:none;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 0 0 1px rgba(0,0,0,.08);
+}
 .map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);flex-wrap:wrap}
 .map-toolbar strong{color:var(--text)}
 .map-btn{display:inline-block;padding:7px 10px;border-radius:8px;background:var(--soft);color:var(--green);font-size:10px;font-weight:800}
@@ -94,10 +142,10 @@ section{padding:65px 0}
 .village{padding:13px 0;border-bottom:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;gap:15px}
 .village:last-child{border:0}.village span{color:var(--muted)}
 .location-note{margin-top:14px;padding:12px;border-radius:10px;background:#fff7e6;border:1px solid #f0dfb6;color:#765d20;font-size:10px;line-height:1.6}
-.location-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff}
+.location-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;height:8cm;max-height:8cm;position:relative}
 .location-table{width:100%;min-width:620px;border-collapse:collapse;font-size:11px}
 .location-table th,.location-table td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
-.location-table th{background:#f1f5f3;color:#0b3b2b;font-size:10px;white-space:nowrap}
+.location-table th{background:#f1f5f3;color:#0b3b2b;font-size:10px;white-space:nowrap;position:sticky;top:0;z-index:3}
 .location-table td:nth-child(n+2){text-align:center;font-weight:700}
 .location-table tbody tr:hover{background:#f8fbf9}
 .leaflet-popup-content{font-family:Inter,Segoe UI,Arial,sans-serif;font-size:11px;line-height:1.5}
@@ -236,7 +284,16 @@ footer strong{font-size:14px}
 
     <div class="locations">
       <div class="map-card">
-        <div class="map"><div id="locationMap"></div></div>
+        <div class="map">
+          <div id="locationMap"></div>
+          <div class="location-legend">
+            <div class="location-legend-title">Status Monitoring</div>
+            <div class="location-legend-row"><span class="location-legend-dot" style="background:#16834b"></span>Masih Berjalan</div>
+            <div class="location-legend-row"><span class="location-legend-dot" style="background:#c84f4f"></span>Mati</div>
+            <div class="location-legend-row"><span class="location-legend-dot" style="background:#e3a33b"></span>Tidak Berkembang/Kurang Baik</div>
+            <div class="location-legend-row"><span class="location-legend-dot" style="background:#8b9590"></span>Belum Monitoring</div>
+          </div>
+        </div>
         <div class="map-toolbar">
           <div><strong>Peta Lokasi Program</strong> • Klik titik untuk melihat informasi program.</div>
           <div style="display:flex;gap:7px;flex-wrap:wrap">
@@ -308,13 +365,44 @@ footer strong{font-size:14px}
 <section id="impact" class="impact">
   <div class="container">
     <h2 class="section-title">Community Impact</h2>
-    <p class="section-sub">Jumlah penerima manfaat yang dapat diperbarui dari database monitoring.</p>
+    <p class="section-sub">Jumlah penerima manfaat berdasarkan data penerima manfaat.</p>
+
     <div class="impact-grid">
-      <div class="impact-card"><b>—</b><span>Penerima Manfaat Kelompok</span></div>
-      <div class="impact-card"><b>—</b><span>Penerima Manfaat Individu</span></div>
-      <div class="impact-card"><b>—</b><span>Penerima Manfaat Laki-laki</span></div>
-      <div class="impact-card"><b>—</b><span>Penerima Manfaat Perempuan</span></div>
-      <div class="impact-card"><b>—</b><span>Instansi / Other</span></div>
+      <div class="impact-card"><b id="impactKelompok">—</b><span>Penerima Manfaat Kelompok</span></div>
+      <div class="impact-card"><b id="impactIndividu">—</b><span>Penerima Manfaat Individu</span></div>
+      <div class="impact-card"><b id="impactLaki">—</b><span>Penerima Manfaat Laki-laki</span></div>
+      <div class="impact-card"><b id="impactPerempuan">—</b><span>Penerima Manfaat Perempuan</span></div>
+      <div class="impact-card"><b id="impactOther">—</b><span>Instansi / Other</span></div>
+    </div>
+
+    <div class="impact-tools">
+      <input id="impactSearchName" list="impactNameList" type="search" placeholder="Cari Nama Penerima / Kelompok..." autocomplete="off">
+      <datalist id="impactNameList"></datalist>
+      <select id="impactFilterLocation">
+        <option value="">Semua Gampong</option>
+      </select>
+    </div>
+
+    <div class="impact-count-note" id="impactCountNote">Menyiapkan data...</div>
+
+    <div class="impact-table-wrap">
+      <div class="impact-table-scroll">
+        <table class="impact-table">
+          <thead>
+            <tr>
+              <th>Nama Penerima/Kelompok</th>
+              <th>Gampong</th>
+              <th>Jenis Kelamin</th>
+              <th>Nama Program</th>
+              <th>Tahun Program</th>
+              <th>Jenis Bantuan</th>
+            </tr>
+          </thead>
+          <tbody id="impactTableBody">
+            <tr><td colspan="6" style="text-align:center;color:var(--muted)">Memuat data penerima manfaat...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </section>
@@ -442,6 +530,131 @@ footer strong{font-size:14px}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
+<!-- COMMUNITY IMPACT API -->
+<script>
+const COMMUNITY_API_URL = "https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec";
+let communityImpactData = [];
+
+function cleanImpactValue(value){
+  return String(value ?? "").trim();
+}
+
+function normalizeImpactCategory(value){
+  const s = cleanImpactValue(value).toLowerCase();
+  if (s === "kelompok") return "Kelompok";
+  if (s === "individu") return "Individu";
+  return "";
+}
+
+function normalizeGender(value){
+  const s = cleanImpactValue(value).toLowerCase();
+  if (s.includes("laki")) return "Laki-laki";
+  if (s.includes("perempuan")) return "Perempuan";
+  if (s.includes("other") || s.includes("lain")) return "Other";
+  return "";
+}
+
+async function loadCommunityImpactData(){
+  try{
+    const response = await fetch(COMMUNITY_API_URL);
+    if(!response.ok) throw new Error("Gagal mengambil data Community Impact");
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : payload.data;
+    if(!Array.isArray(data)) throw new Error("Format data Community Impact tidak sesuai");
+    communityImpactData = data;
+    buildCommunityImpactFilters(data);
+    updateCommunityImpact(data);
+  }catch(error){
+    console.error("Community Impact API Error:", error);
+    const note = document.getElementById("impactCountNote");
+    if(note) note.textContent = "Data Community Impact belum dapat dimuat. Pastikan API sheet penerima_manfaat sudah aktif.";
+  }
+}
+
+function buildCommunityImpactFilters(data){
+  const nameList = document.getElementById("impactNameList");
+  const locationSelect = document.getElementById("impactFilterLocation");
+  if(!nameList || !locationSelect) return;
+
+  const names = [...new Set(data.map(r=>cleanImpactValue(r["Nama Penerima/Kelompok"])).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,"id",{sensitivity:"base"}));
+  nameList.innerHTML = names.map(name=>`<option value="${escapeHtml(name)}"></option>`).join("");
+
+  const locations = [...new Set(data.map(r=>cleanImpactValue(r["Gampong"])).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,"id",{sensitivity:"base"}));
+  locationSelect.innerHTML = '<option value="">Semua Gampong</option>';
+  locations.forEach(location=>{
+    const option=document.createElement("option");
+    option.value=location;
+    option.textContent=location;
+    locationSelect.appendChild(option);
+  });
+
+  const search=document.getElementById("impactSearchName");
+  search?.addEventListener("input",applyCommunityImpactFilters);
+  locationSelect.addEventListener("change",applyCommunityImpactFilters);
+}
+
+function applyCommunityImpactFilters(){
+  const name = cleanImpactValue(document.getElementById("impactSearchName")?.value);
+  const location = cleanImpactValue(document.getElementById("impactFilterLocation")?.value);
+  const needle = name.toLowerCase();
+
+  const filtered = communityImpactData.filter(row=>{
+    const rowName=cleanImpactValue(row["Nama Penerima/Kelompok"]);
+    const rowLocation=cleanImpactValue(row["Gampong"]);
+    if(needle && !rowName.toLowerCase().includes(needle)) return false;
+    if(location && rowLocation !== location) return false;
+    return true;
+  });
+
+  updateCommunityImpact(filtered);
+}
+
+function updateCommunityImpact(data){
+  let kelompok=0, individu=0, laki=0, perempuan=0, other=0;
+  data.forEach(row=>{
+    const category=normalizeImpactCategory(row["Kelompok/Individu"]);
+    const gender=normalizeGender(row["Jenis Kelamin"]);
+    if(category === "Kelompok") kelompok++;
+    if(category === "Individu") individu++;
+    if(gender === "Laki-laki") laki++;
+    if(gender === "Perempuan") perempuan++;
+    if(gender === "Other") other++;
+  });
+
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value.toLocaleString("id-ID");};
+  set("impactKelompok",kelompok);
+  set("impactIndividu",individu);
+  set("impactLaki",laki);
+  set("impactPerempuan",perempuan);
+  set("impactOther",other);
+
+  const note=document.getElementById("impactCountNote");
+  if(note) note.textContent=`Menampilkan ${data.length.toLocaleString("id-ID")} data penerima manfaat.`;
+
+  const body=document.getElementById("impactTableBody");
+  if(!body) return;
+  body.innerHTML="";
+  if(data.length===0){
+    body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted)">Tidak ada data sesuai pencarian.</td></tr>';
+    return;
+  }
+  data.forEach(row=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${escapeHtml(cleanImpactValue(row["Nama Penerima/Kelompok"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Gampong"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Jenis Kelamin"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Nama Program"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Tahun Program"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Jenis Bantuan"]) || "-")}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+</script>
+
 <!-- SUSTAINABILITY API -->
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
@@ -556,11 +769,7 @@ function updateLocationSection(data) {
     tableBody.innerHTML = "";
 
     const entries = Object.entries(byRecipient)
-      .sort((a, b) => {
-        const totalA = a[1].withCoord + a[1].withoutCoord;
-        const totalB = b[1].withCoord + b[1].withoutCoord;
-        return totalB - totalA || a[0].localeCompare(b[0], "id");
-      });
+      .sort((a, b) => a[0].localeCompare(b[0], "id", { sensitivity: "base", numeric: true }));
 
     if (entries.length === 0) {
       tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--muted)">Belum ada data lokasi.</td></tr>`;
@@ -589,9 +798,11 @@ function updateLocationSection(data) {
       zoomControl: true
     });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    // Basemap utama menggunakan Esri World Street Map agar
+    // latar peta tetap tampil pada halaman publik.
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
       maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: 'Tiles &copy; Esri'
     }).addTo(locationMap);
 
     locationLayer = L.layerGroup().addTo(locationMap);
@@ -612,7 +823,25 @@ function updateLocationSection(data) {
     const year = cleanValue(row["Tahun Budget"]);
     const summary = cleanValue(row["Summary Monev"]);
 
-    const marker = L.marker([coordinate.lat, coordinate.lng]);
+    const normalizedStatus = normalizeSummary(summary);
+
+    const statusColors = {
+      "Masih Berjalan": "#16834b",
+      "Mati": "#c84f4f",
+      "Tidak Berkembang": "#e3a33b",
+      "Belum Monitoring": "#8b9590"
+    };
+
+    const markerColor = statusColors[normalizedStatus] || "#8b9590";
+
+    const marker = L.circleMarker([coordinate.lat, coordinate.lng], {
+      radius: 7,
+      color: "#ffffff",
+      weight: 2,
+      opacity: 1,
+      fillColor: markerColor,
+      fillOpacity: 0.95
+    });
 
     const popup = `
       <div class="location-popup">
@@ -620,7 +849,7 @@ function updateLocationSection(data) {
         <h4>${escapeHtml(description)}</h4>
         <div class="meta"><b>Tahun Program:</b> ${escapeHtml(year || "-")}</div>
         <div class="meta"><b>Lokasi:</b> ${escapeHtml(recipient || "-")}</div>
-        <div class="meta"><b>Summary Monev:</b> ${escapeHtml(summary || "-")}</div>
+        <div class="meta"><b>Summary Monev:</b> ${escapeHtml(normalizedStatus === "Tidak Berkembang" ? "Tidak Berkembang/Kurang Baik" : normalizedStatus)}</div>
         <div class="meta"><b>Koordinat:</b> ${coordinate.lat.toFixed(6)}, ${coordinate.lng.toFixed(6)}</div>
         <div class="popup-actions">
           <a href="${googleMapsUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Maps</a>
@@ -630,6 +859,8 @@ function updateLocationSection(data) {
     `;
 
     marker.bindPopup(popup, { maxWidth: 320 });
+    marker.on("mouseover", () => marker.setStyle({ radius: 10, weight: 3 }));
+    marker.on("mouseout", () => marker.setStyle({ radius: 8, weight: 2 }));
     marker.bindTooltip(description, { direction: "top", offset: [0, -8] });
     marker.addTo(locationLayer);
     bounds.push([coordinate.lat, coordinate.lng]);
@@ -1097,7 +1328,10 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-document.addEventListener("DOMContentLoaded", loadSustainabilityData);
+document.addEventListener("DOMContentLoaded", () => {
+  loadSustainabilityData();
+  loadCommunityImpactData();
+});
 </script>
 
 </body>

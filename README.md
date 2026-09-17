@@ -26,52 +26,46 @@ Website digital masyarakat binaan untuk menampilkan informasi program, produk lo
 - Vercel
 - GitHub
 
-## Data Sustainability
+## Lokasi
 
-Dashboard Sustainability Program terhubung ke Google Apps Script API dan menggunakan data:
+Peta Lokasi menggunakan data koordinat dari `Web_binaan` dan menampilkan titik program berdasarkan `Koordinat Sustain`.
 
-- Monitoring Code
-- Sustain/No
-- Summary Monev
-- Activity
-- Tahun Budget
-- Deskripsi
+Warna titik dibedakan berdasarkan `Summary Monev`:
 
-Program dihitung berdasarkan **Monitoring Code unik** agar satu program tidak dihitung berulang.
-
-Dashboard menampilkan:
-
-- Total Program
 - Masih Berjalan
 - Mati
-- Tidak Berkembang / Kurang Baik
+- Tidak Berkembang/Kurang Baik
 - Belum Monitoring
-- Grafik Summary Monev
-- Grafik Activity
-- Grafik penerima manfaat per gampong (struktur tampilan)
-- Activity × Summary Monev
 
-## Pengembangan Berikutnya
+Legend ditempatkan di dalam area peta agar tidak menutupi toolbar peta.
 
-Bagian berikut disiapkan untuk dikembangkan menjadi data dinamis:
+## Sustainability Program
 
-- Produk UMKM: foto, lokasi gampong, PIC, WhatsApp, stok/status tersedia-habis
-- Peternakan / Perikanan / Pertanian: foto, lokasi, PIC, kontak
-- UMKM Jasa: foto, lokasi, PIC, kontak
-- Lokasi: koordinat, peta interaktif, Google Maps, program per titik, jumlah penerima manfaat
-- Pagu Gampong: filter tahun, gampong, jenis program, pagu, realisasi
-- Community Impact: kelompok, individu, laki-laki, perempuan, instansi/other
-- Galeri: foto kegiatan dan deskripsi singkat
+Dashboard Sustainability terhubung ke Google Apps Script API dan menggunakan data monitoring program.
+
+## Community Impact
+
+Community Impact terhubung ke tab `penerima_manfaat` dan menampilkan data penerima manfaat. NIK tidak ditampilkan pada website publik.
+
+Fitur Community Impact:
+- Search Nama Penerima/Kelompok
+- Filter Gampong
+- KPI Kelompok
+- KPI Individu
+- KPI Laki-laki
+- KPI Perempuan
+- KPI Other
+- Tabel Jenis Bantuan
 
 ## Catatan
 
 File `index.html` adalah halaman utama website dan dapat langsung di-upload ke repository GitHub.
 
-Website publik tidak menampilkan data budget pada dashboard Sustainability. Data budget hanya disiapkan untuk menu **Pagu Gampong** melalui koneksi data terpisah pada tahap pengembangan berikutnya.
+Website publik tidak menampilkan data budget pada dashboard Sustainability. Data budget disiapkan untuk menu Pagu Gampong melalui koneksi data terpisah.
 
 ## Deployment
 
-Repository GitHub dapat dihubungkan ke Vercel. Setiap perubahan pada branch utama dapat dideploy otomatis oleh Vercel.
+Repository GitHub dapat dihubungkan ke Vercel. Perubahan pada branch utama dapat dideploy otomatis oleh Vercel.
 
 **Website:** Binaan CSR  
 **Subtitle:** Community Development Portal  
