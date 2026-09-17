@@ -603,7 +603,7 @@ function updateCommunityImpact(data){
       <td>${escapeHtml(cleanImpactValue(row["Jenis Kelamin"]) || "-")}</td>
       <td>${escapeHtml(cleanImpactValue(row["Nama Program"]) || "-")}</td>
       <td>${escapeHtml(cleanImpactValue(row["Tahun Program"]) || "-")}</td>
-      <td>${escapeHtml(cleanImpactValue(row["Jenis Bantuan/Ternak/Budidaya/Produk"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Jenis Bantuan"]) || "-")}</td>
     `;
     body.appendChild(tr);
   });
