@@ -2,75 +2,67 @@
 
 **Community Development Portal**
 
-## Update
+Website digital masyarakat binaan untuk menampilkan informasi program, produk lokal, lokasi, community impact, sustainability program, dan galeri kegiatan.
 
-Versi ini menambahkan data dinamis untuk:
+## Struktur Menu
 
+- Home
 - Produk UMKM
-- UMKM Jasa
 - Peternakan / Perikanan / Pertanian
+- UMKM Jasa
+- Lokasi
+- Pagu Gampong
+- Community Impact
+- Sustainability Program
+- Galeri
 
-Ketiga menu menggunakan **1 sumber Sheet `web_produk`** dan dibedakan berdasarkan nilai pada kolom **A — Tampil Web**:
+## Teknologi
 
-- `Produk UMKM`
-- `Produk Jasa`
-- `Peternakan / Perikanan / Pertanian`
+- HTML
+- CSS
+- JavaScript
+- Google Apps Script API
+- Google Sheets
+- Vercel
+- GitHub
 
-Baris dengan nilai lain pada kolom A tidak ditampilkan pada ketiga menu tersebut.
+## Data Sustainability
 
-## Kartu Produk
+Dashboard Sustainability Program tetap menggunakan koneksi dan struktur yang ada pada file HTML ini. Tidak ada perubahan pada logika dashboard Sustainability.
 
-Kartu menampilkan:
+Dashboard menampilkan:
 
-1. Foto
-2. Nama Usaha
-3. Jenis Produk
-4. Gampong
-5. Nama Pemilik
-6. Stok
-7. Keterangan
-8. Hubungi via WhatsApp
-9. Lokasi (koordinat)
-10. Status
+- Total Program
+- Masih Berjalan
+- Mati
+- Tidak Berkembang / Kurang Baik
+- Belum Monitoring
+- Grafik Summary Monev
+- Grafik Activity
+- Grafik penerima manfaat per gampong
+- Activity × Summary Monev
 
-Foto menggunakan field **`Foto URL`** dari Apps Script `Web_produk`.
+## Lokasi
 
-Kontak otomatis menggunakan link WhatsApp yang dibuat oleh Apps Script dari kolom Kontak.
+Bagian Lokasi tetap menggunakan data `Web_binaan`, kolom `Koordinat Sustain`, dan popup informasi program yang sudah ada. Perubahan pada versi ini hanya pada bentuk titik lokasi di peta:
 
-## API
+- 🟢 Masih Berjalan
+- 🔴 Mati
+- 🟠 Tidak Berkembang/Kurang Baik
+- ⚪ Belum Monitoring atau status kosong
 
-### Web Produk
+Marker dibuat sebagai **titik lokasi kecil (circle marker)**, bukan pin. Klik titik tetap membuka informasi program, koordinat, Google Maps, dan Google Earth seperti sebelumnya.
 
-`https://script.google.com/macros/s/AKfycby9Z4BVbERlJ13p8J_GvbakhuvhAJbxEebTTJC90BoPXnPOkizeKXsEjzuZOJZfX-QT/exec`
+## Catatan
 
-### Community Impact
-
-Menggunakan deployment **Web_community_impact**:
-
-`https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec`
-
-Kolom spreadsheet `Jenis Bantuan/Ternak/Budidaya/Produk` tetap digunakan sebagai sumber, tetapi tampilan website menggunakan nama pendek **Jenis Bantuan**.
-
-NIK tidak ditampilkan.
-
-### Sustainability / Lokasi
-
-Bagian Sustainability dan Lokasi dipertahankan dari versi sebelumnya.
+- Layout dan fungsi Sustainability Program tidak diubah.
+- Struktur dan fungsi Lokasi lainnya tidak diubah; hanya tampilan marker lokasi yang dibuat menjadi titik berwarna berdasarkan Summary Monev.
+- Data budget tidak digunakan pada dashboard Sustainability.
 
 ## Deployment
 
-Upload `index.html` ke repository GitHub yang terhubung ke Vercel.
+Repository GitHub dapat dihubungkan ke Vercel. Setiap perubahan pada branch utama dapat dideploy otomatis oleh Vercel.
 
-
-## Lokasi pada Kartu Produk
-
-Kolom **Lokasi** pada `web_produk` digunakan sebagai koordinat `latitude, longitude`.
-
-Contoh:
-`4.135163, 96.168977`
-
-Jika koordinat valid, kartu menyediakan dua tombol:
-- 📍 Google Maps
-- 🌍 Google Earth
-
-Tombol dibuka di tab baru. Jika Lokasi kosong/tidak valid, koordinat tetap ditampilkan sebagai `-` dan tombol lokasi tidak dibuat.
+**Website:** Binaan CSR  
+**Subtitle:** Community Development Portal  
+**Footer:** Digital Community Portal • Produk Lokal
