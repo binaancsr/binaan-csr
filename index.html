@@ -63,6 +63,10 @@ section{padding:65px 0}
 .kpi{background:var(--bg);border-radius:11px;padding:15px}
 .kpi small{font-size:10px;color:var(--muted)}.kpi b{display:block;font-size:23px;margin-top:5px;color:var(--green)}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:18px}
+.sustain-layout{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:18px;align-items:start}
+.sustain-left{grid-column:1;grid-row:1 / span 3}
+.sustain-right{grid-column:2;display:flex;flex-direction:column;gap:17px}
+.sustain-right .chartbox{width:100%}
 .chartbox{border:1px solid var(--line);border-radius:14px;padding:18px}
 .chartbox h3{font-size:14px;margin:0}.chartbox p{font-size:10px;color:var(--muted)}
 .barrow{display:grid;grid-template-columns:105px 1fr 40px;gap:8px;align-items:center;font-size:11px;margin:12px 0}
@@ -101,11 +105,23 @@ footer strong{font-size:14px}
 }
 @media(max-width:700px){
   section{padding:50px 0}.hero{padding:70px 0 78px}
-  .hero h1{font-size:43px}.cards4,.charts,.locations{grid-template-columns:1fr}
+  .hero h1{font-size:43px}.cards4,.charts,.locations,.sustain-layout{grid-template-columns:1fr}.sustain-left{grid-column:1;grid-row:auto}.sustain-right{grid-column:1}
   .kpis{grid-template-columns:repeat(2,1fr)}.impact-grid{grid-template-columns:repeat(2,1fr)}
   .donutwrap{display:block}.donut{margin:auto}.legend{margin-top:15px}
   footer{display:block}footer div+div{margin-top:12px}
 }
+
+.program-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.program-table-head{padding:18px 18px 12px}
+.program-table-head h3{font-size:14px;margin:0 0 6px}
+.program-table-head p{font-size:10px;color:var(--muted);margin:0}
+.table-scroll{max-height:520px;overflow:auto;position:relative}
+.program-table thead th{position:sticky;top:0;z-index:2}
+.program-table{width:100%;min-width:1200px;border-collapse:collapse;font-size:11px}
+.program-table th{background:#f1f5f3;color:#0b3b2b;text-align:left;font-weight:700;padding:11px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.program-table td{padding:10px 12px;border-bottom:1px solid #edf1ef;vertical-align:top;line-height:1.4}
+.program-table tbody tr:hover{background:#f8fbf9}
+.program-table .empty{padding:22px;text-align:center;color:var(--muted)}
 </style>
 </head>
 
@@ -250,11 +266,16 @@ footer strong{font-size:14px}
     <h2 class="section-title">Sustainability Program</h2>
     <p class="section-sub">Monitoring berdasarkan jumlah program, kondisi, aktivitas, lokasi, dan hasil monitoring.</p>
     <div class="dashboard">
-      <div class="filters">
-        <select><option>Semua Tahun</option></select>
-        <select><option>Semua Bulan</option></select>
-        <select><option>Semua Gampong</option></select>
-        <select><option>Semua Activity</option></select>
+      <div class="filters sustainability-filters">
+        <select id="filterTahun">
+          <option value="">Semua Tahun</option>
+        </select>
+        <select id="filterPenerima">
+          <option value="">Semua Penerima Manfaat</option>
+        </select>
+        <select id="filterActivity">
+          <option value="">Semua Activity</option>
+        </select>
       </div>
       <div class="kpis">
         <div class="kpi"><small>Total Program</small><b>—</b></div>
@@ -263,43 +284,76 @@ footer strong{font-size:14px}
         <div class="kpi"><small>Tidak Berkembang / Kurang Baik</small><b>—</b></div>
         <div class="kpi"><small>Belum Monitoring</small><b>—</b></div>
       </div>
-      <div class="charts">
-        <div class="chartbox">
-          <h3>Summary Monev</h3>
-          <p>Distribusi kondisi program berdasarkan kolom Summary Monev.</p>
-          <div class="barrow"><span>Masih Berjalan</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Mati</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Tidak Berkembang</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Belum Monitoring</span><div class="bar"><i></i></div><b>—</b></div>
+      <div class="sustain-layout">
+        <div class="sustain-left">
+          <div class="chartbox">
+            <h3>Penerima Manfaat per Gampong</h3>
+            <p>Jumlah penerima manfaat berdasarkan lokasi gampong.</p>
+            <div class="barrow"><span>Gampong A</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Gampong B</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Gampong C</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Gampong D</span><div class="bar"><i></i></div><b>—</b></div>
+          </div>
         </div>
-        <div class="chartbox">
-          <h3>Activity</h3>
-          <p>Jumlah program berdasarkan Activity.</p>
-          <div class="barrow"><span>Peternakan</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Perikanan</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Pertanian</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Perkebunan</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Ekonomi</span><div class="bar"><i></i></div><b>—</b></div>
+
+        <div class="sustain-right">
+          <div class="chartbox">
+            <h3>Summary Monev</h3>
+            <p>Distribusi kondisi program berdasarkan kolom Summary Monev.</p>
+            <div class="barrow"><span>Masih Berjalan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Mati</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Tidak Berkembang</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Belum Monitoring</span><div class="bar"><i></i></div><b>—</b></div>
+          </div>
+
+          <div class="chartbox">
+            <h3>Activity</h3>
+            <p>Jumlah program berdasarkan Activity.</p>
+            <div class="barrow"><span>Peternakan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Perikanan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Pertanian</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Perkebunan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Ekonomi</span><div class="bar"><i></i></div><b>—</b></div>
+          </div>
+
+          <div class="chartbox">
+            <h3>Activity × Summary Monev</h3>
+            <p>Perbandingan aktivitas dengan kondisi hasil monitoring.</p>
+            <div class="donutwrap"><div class="donut"></div><div class="legend">
+              <div><span class="dot"></span>Masih Berjalan</div>
+              <div>● Mati</div><div>● Tidak Berkembang</div><div>● Belum Monitoring</div>
+            </div></div>
+          </div>
         </div>
       </div>
-      <div class="charts">
-        <div class="chartbox">
-          <h3>Penerima Manfaat per Gampong</h3>
-          <p>Jumlah penerima manfaat berdasarkan lokasi gampong.</p>
-          <div class="barrow"><span>Gampong A</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Gampong B</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Gampong C</span><div class="bar"><i></i></div><b>—</b></div>
-          <div class="barrow"><span>Gampong D</span><div class="bar"><i></i></div><b>—</b></div>
+
+      <div class="program-table-wrap">
+        <div class="program-table-head">
+          <h3>Daftar Program</h3>
+          <p>Daftar program berdasarkan data <b>Monitoring Code</b> sesuai filter yang dipilih. Monitoring Code dapat tampil berulang jika memiliki Deskripsi yang berbeda.</p>
         </div>
-        <div class="chartbox">
-          <h3>Activity × Summary Monev</h3>
-          <p>Perbandingan aktivitas dengan kondisi hasil monitoring.</p>
-          <div class="donutwrap"><div class="donut"></div><div class="legend">
-            <div><span class="dot"></span>Masih Berjalan</div>
-            <div>● Mati</div><div>● Tidak Berkembang</div><div>● Belum Monitoring</div>
-          </div></div>
+        <div class="table-scroll">
+          <table class="program-table">
+            <thead>
+              <tr>
+                <th>Monitoring Code</th>
+                <th>Deskripsi</th>
+                <th>Activity</th>
+                <th>Sub-Kategori</th>
+                <th>Detail Benefit Recipients</th>
+                <th>Hasil Monev Sustain</th>
+                <th>Status Monitoring (Sustain)</th>
+                <th>Tgl Monev Sustain</th>
+                <th>Summary Monev</th>
+              </tr>
+            </thead>
+            <tbody id="programTableBody">
+              <tr><td class="empty" colspan="9">Memuat data program...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
       <div class="status-note"><b>Sumber data:</b> database monitoring PPM-CSR. Data budget tidak digunakan pada dashboard Sustainability.</div>
     </div>
   </div>
@@ -327,22 +381,25 @@ footer strong{font-size:14px}
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
 
+let sustainabilityData = [];
+
 async function loadSustainabilityData() {
   try {
     const response = await fetch(API_URL);
     if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet");
 
     const payload = await response.json();
-
-    // API baru mengembalikan { success, data: [...] }.
-    // Tetap mendukung format array jika API lama masih terpakai.
     const data = Array.isArray(payload) ? payload : payload.data;
 
     if (!Array.isArray(data)) {
       throw new Error("Format data API tidak sesuai");
     }
 
-    updateSustainabilityDashboard(data);
+    sustainabilityData = data;
+
+    buildSustainabilityFilters(sustainabilityData);
+    updateSustainabilityDashboard(sustainabilityData);
+    setupSustainabilityFilters();
   } catch (error) {
     console.error("API Error:", error);
   }
@@ -366,23 +423,177 @@ function normalizeSummary(value) {
   return "Belum Monitoring";
 }
 
+function cleanValue(value) {
+  return String(value ?? "").trim();
+}
+
+function uniqueSorted(values) {
+  return [...new Set(values.map(cleanValue).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "id", { sensitivity: "base" }));
+}
+
+function buildSustainabilityFilters(data) {
+  const yearSelect = document.getElementById("filterTahun");
+  const recipientSelect = document.getElementById("filterPenerima");
+  const activitySelect = document.getElementById("filterActivity");
+
+  if (!yearSelect || !recipientSelect || !activitySelect) return;
+
+  const years = uniqueSorted(
+    data.map(row => cleanValue(row["Tahun Budget"]))
+  ).sort((a, b) => {
+    const na = Number(a), nb = Number(b);
+    if (Number.isFinite(na) && Number.isFinite(nb)) return nb - na;
+    return b.localeCompare(a);
+  });
+
+  const recipients = uniqueSorted(
+    data.map(row => row["Penerima Manfaat"])
+  );
+
+  const activities = uniqueSorted(
+    data.map(row => row["Activity"])
+  );
+
+  yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
+  years.forEach(year => {
+    const option = document.createElement("option");
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  });
+
+  recipientSelect.innerHTML = '<option value="">Semua Penerima Manfaat</option>';
+  recipients.forEach(recipient => {
+    const option = document.createElement("option");
+    option.value = recipient;
+    option.textContent = recipient;
+    recipientSelect.appendChild(option);
+  });
+
+  activitySelect.innerHTML = '<option value="">Semua Activity</option>';
+  activities.forEach(activity => {
+    const option = document.createElement("option");
+    option.value = activity;
+    option.textContent = activity;
+    activitySelect.appendChild(option);
+  });
+}
+
+function setupSustainabilityFilters() {
+  const yearSelect = document.getElementById("filterTahun");
+  const recipientSelect = document.getElementById("filterPenerima");
+  const activitySelect = document.getElementById("filterActivity");
+
+  if (!yearSelect || !recipientSelect || !activitySelect) return;
+
+  // Hindari memasang listener lebih dari sekali.
+  if (yearSelect.dataset.ready === "1") return;
+
+  const applyFilters = () => {
+    const selectedYear = cleanValue(yearSelect.value);
+    const selectedRecipient = cleanValue(recipientSelect.value);
+    const selectedActivity = cleanValue(activitySelect.value);
+
+    const filteredData = sustainabilityData.filter(row => {
+      const year = cleanValue(row["Tahun Budget"]);
+      const recipient = cleanValue(row["Penerima Manfaat"]);
+      const activity = cleanValue(row["Activity"]);
+
+      if (selectedYear && year !== selectedYear) return false;
+      if (selectedRecipient && recipient !== selectedRecipient) return false;
+      if (selectedActivity && activity !== selectedActivity) return false;
+
+      return true;
+    });
+
+    updateSustainabilityDashboard(filteredData);
+  };
+
+  yearSelect.addEventListener("change", applyFilters);
+  recipientSelect.addEventListener("change", applyFilters);
+  activitySelect.addEventListener("change", applyFilters);
+
+  yearSelect.dataset.ready = "1";
+}
+
+function renderProgramTable(data) {
+  const tbody = document.getElementById("programTableBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  // Tabel menampilkan SETIAP baris hasil filter.
+  // Monitoring Code boleh berulang karena satu Monitoring Code
+  // dapat memiliki beberapa Deskripsi / record program yang berbeda.
+  const programs = data.filter(row => {
+    return cleanValue(row["Monitoring Code"]) !== "";
+  });
+
+  if (programs.length === 0) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="empty" colspan="9">Tidak ada program sesuai filter yang dipilih.</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+
+  programs.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><b>${escapeHtml(cleanValue(row["Monitoring Code"]))}</b></td>
+      <td>${escapeHtml(cleanValue(row["Deskripsi"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Activity"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Sub-Kategori"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Detail Benefit Recipients"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Hasil Monev Sustain"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Status Monitoring (Sustain)"]))}</td>
+      <td>${escapeHtml(formatDateValue(row["Tgl Monev Sustain"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Summary Monev"]))}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function formatDateValue(value) {
+  if (value === null || value === undefined || value === "") return "";
+
+  const text = String(value).trim();
+  if (!text) return "";
+
+  // Pertahankan format tanggal yang dikirim API bila sudah berupa tanggal.
+  // Hindari menampilkan 1 Januari 1900 untuk nilai kosong/0.
+  if (text === "0" || text === "1/0/1900" || text === "01/01/1900") return "";
+
+  const date = new Date(value);
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  }
+
+  return text;
+}
+
 function updateSustainabilityDashboard(data) {
   const section = document.querySelector("#sustainability");
   if (!section || !Array.isArray(data)) return;
 
-  // =====================================================
-  // 1. FILTER SUSTAINABILITY
-  // =====================================================
+  // Hanya data Sustain/No selain "No".
   const records = data.filter(row => {
-    const sustain = String(row["Sustain/No"] || "").toLowerCase().trim();
+    const sustain = cleanValue(row["Sustain/No"]).toLowerCase();
     return sustain !== "no";
   });
 
+  // Tabel program mengikuti setiap baris hasil filter.
+  // Monitoring Code boleh berulang jika Deskripsi/record berbeda.
+  renderProgramTable(records);
+
   // =====================================================
-  // 2. HITUNG SUMMARY MONEV BERDASARKAN COUNT MONEV
+  // SUMMARY MONEV - menggunakan Count Monev
   // =====================================================
   let totalProgram = 0;
-
   const summaryCount = {
     "Masih Berjalan": 0,
     "Mati": 0,
@@ -402,9 +613,7 @@ function updateSustainabilityDashboard(data) {
     }
   });
 
-  // =====================================================
-  // 3. UPDATE KPI
-  // =====================================================
+  // KPI
   const kpis = section.querySelectorAll(".kpi b");
   const labels = section.querySelectorAll(".kpi small");
 
@@ -424,11 +633,7 @@ function updateSustainabilityDashboard(data) {
     labels[4].textContent = "Belum Monitoring";
   }
 
-  // =====================================================
-  // 4. CARI CHART BERDASARKAN JUDUL
-  // =====================================================
   const chartBoxes = section.querySelectorAll(".chartbox");
-
   let summaryChart = null;
   let activityChart = null;
   let villageChart = null;
@@ -438,18 +643,17 @@ function updateSustainabilityDashboard(data) {
     if (!title) return;
 
     const t = title.textContent.toLowerCase().trim();
-
-    if (t.includes("summary monev")) summaryChart = box;
+    if (t === "summary monev") summaryChart = box;
     if (t === "activity") activityChart = box;
     if (t.includes("penerima manfaat per gampong")) villageChart = box;
   });
 
   // =====================================================
-  // 5. GRAFIK SUMMARY MONEV
+  // GRAFIK SUMMARY MONEV
   // =====================================================
   if (summaryChart) {
-    const summaryBars = summaryChart.querySelectorAll(".barrow");
-    const summaryMax = Math.max(
+    const bars = summaryChart.querySelectorAll(".barrow");
+    const maxValue = Math.max(
       summaryCount["Masih Berjalan"],
       summaryCount["Mati"],
       summaryCount["Tidak Berkembang"],
@@ -457,13 +661,13 @@ function updateSustainabilityDashboard(data) {
       1
     );
 
-    summaryBars.forEach(bar => {
+    bars.forEach(bar => {
       const label = bar.querySelector("span");
       const fill = bar.querySelector(".bar i");
       const number = bar.querySelector("b");
       if (!label) return;
 
-      const name = label.textContent.trim().toLowerCase();
+      const name = label.textContent.toLowerCase().trim();
       let value = 0;
 
       if (name.includes("masih berjalan")) value = summaryCount["Masih Berjalan"];
@@ -471,22 +675,22 @@ function updateSustainabilityDashboard(data) {
       else if (name.includes("tidak berkembang") || name.includes("kurang baik")) value = summaryCount["Tidak Berkembang"];
       else if (name.includes("belum monitoring")) value = summaryCount["Belum Monitoring"];
 
-      if (fill) fill.style.width = ((value / summaryMax) * 100) + "%";
+      if (fill) fill.style.width = ((value / maxValue) * 100) + "%";
       if (number) number.textContent = value.toLocaleString("id-ID");
     });
   }
 
   // =====================================================
-  // 6. GRAFIK ACTIVITY
+  // GRAFIK ACTIVITY - menggunakan Count Monev
   // =====================================================
   const activities = ["Peternakan", "Perikanan", "Pertanian", "Perkebunan", "Ekonomi"];
   const activityCount = {};
   activities.forEach(name => activityCount[name] = 0);
 
   records.forEach(row => {
-    const activity = String(row["Activity"] || "").trim().toLowerCase();
+    const activity = cleanValue(row["Activity"]).toLowerCase();
     const count = getCountMonev(row);
-    if (count <= 0) return;
+    if (!activity || count <= 0) return;
 
     activities.forEach(name => {
       if (activity === name.toLowerCase()) activityCount[name] += count;
@@ -494,10 +698,10 @@ function updateSustainabilityDashboard(data) {
   });
 
   if (activityChart) {
-    const activityBars = activityChart.querySelectorAll(".barrow");
+    const bars = activityChart.querySelectorAll(".barrow");
     const maxActivity = Math.max(...activities.map(name => activityCount[name]), 1);
 
-    activityBars.forEach(bar => {
+    bars.forEach(bar => {
       const label = bar.querySelector("span");
       const fill = bar.querySelector(".bar i");
       const number = bar.querySelector("b");
@@ -512,17 +716,14 @@ function updateSustainabilityDashboard(data) {
   }
 
   // =====================================================
-  // 7. PENERIMA MANFAAT PER GAMPONG
+  // PENERIMA MANFAAT PER GAMPONG
+  // Hanya Summary Monev: Masih Berjalan + Tidak Berkembang
+  // Nilai: Count Monev
   // =====================================================
-  // Gampong diambil dari kolom "Penerima Manfaat".
-  // Yang dihitung hanya:
-  //   - Masih Berjalan
-  //   - Tidak Berkembang / Kurang Baik
-  // Nilai menggunakan Count Monev.
   const villageCount = {};
 
   records.forEach(row => {
-    const village = String(row["Penerima Manfaat"] || "").trim();
+    const village = cleanValue(row["Penerima Manfaat"]);
     const count = getCountMonev(row);
     const summary = normalizeSummary(row["Summary Monev"]);
 
@@ -534,31 +735,25 @@ function updateSustainabilityDashboard(data) {
 
   if (villageChart) {
     const oldBars = villageChart.querySelectorAll(".barrow");
-    let container = null;
-
-    if (oldBars.length > 0) {
-      container = oldBars[0].parentElement;
-    } else {
-      container = villageChart;
-    }
+    const container = oldBars.length > 0 ? oldBars[0].parentElement : villageChart;
 
     oldBars.forEach(row => row.remove());
 
-    const villages = Object.entries(villageCount)
-      .sort((a, b) => b[1] - a[1]);
+    // Hapus pesan kosong lama jika ada.
+    villageChart.querySelectorAll(".village-empty").forEach(el => el.remove());
 
+    const villages = Object.entries(villageCount).sort((a, b) => b[1] - a[1]);
     const maxVillage = Math.max(...villages.map(item => item[1]), 1);
 
     if (villages.length === 0) {
       const empty = document.createElement("p");
-      empty.className = "status-note";
-      empty.textContent = "Belum ada data gampong untuk status yang dipilih.";
+      empty.className = "status-note village-empty";
+      empty.textContent = "Belum ada data gampong untuk filter yang dipilih.";
       container.appendChild(empty);
     } else {
       villages.forEach(([village, value]) => {
         const row = document.createElement("div");
         row.className = "barrow";
-
         const width = (value / maxVillage) * 100;
 
         row.innerHTML = `
@@ -573,7 +768,7 @@ function updateSustainabilityDashboard(data) {
   }
 
   // =====================================================
-  // 8. DONUT ACTIVITY × SUMMARY MONEV
+  // DONUT ACTIVITY × SUMMARY MONEV
   // =====================================================
   const donut = section.querySelector(".donut");
 
@@ -611,15 +806,14 @@ function updateSustainabilityDashboard(data) {
       }
     `;
 
-    // Update legend numbers
     const legend = donut.parentElement?.querySelector(".legend");
     if (legend) {
       const items = legend.querySelectorAll("div");
       const values = [running, mati, tidakBerkembang, belumMonitoring];
       items.forEach((item, index) => {
         if (index < values.length) {
-          const text = item.textContent.replace(/\\s*[0-9,.]+$/, "").trim();
-          item.textContent = `${text} ${values[index].toLocaleString("id-ID")}`;
+          const label = item.textContent.replace(/\\s+[0-9,.]+$/, "").trim();
+          item.textContent = `${label} ${values[index].toLocaleString("id-ID")}`;
         }
       });
     }
