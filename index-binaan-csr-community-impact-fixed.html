@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binaan CSR | Community Development Portal</title>
+<meta name="description" content="Digital Masyarakat Binaan — Community Development Portal">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+:root{
+  --green:#087443;--green2:#0d8752;--dark:#073c29;--soft:#eef6f1;
+  --bg:#f5f7f6;--line:#e2e8e4;--text:#17372a;--muted:#718078;--white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:var(--bg)}
+a{text-decoration:none;color:inherit}
+button,select{font:inherit}
+.container{width:min(1180px,90%);margin:auto}
+
+/* NAV */
+.nav{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;
+justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:30}
+.brand{display:flex;align-items:center;gap:10px}
+.brandmark{width:38px;height:38px;border-radius:11px;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:900}
+.brand strong{font-size:16px;letter-spacing:.3px}.brand small{display:block;color:#829089;font-size:9px;margin-top:2px}
+.menu{display:flex;align-items:center;gap:2px}
+.menu a{padding:10px 9px;border-radius:8px;color:#40584e;font-size:12px;font-weight:700}
+.menu a:hover{background:var(--soft);color:var(--green)}
+.menu a.active{color:var(--green)}
+
+/* HERO */
+.hero{background:linear-gradient(120deg,#073c29,#087443);color:#fff;padding:92px 0 98px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:2.5px;color:#bfe7d2}
+.hero h1{font-size:clamp(42px,6vw,68px);line-height:1.02;margin:14px 0 18px;max-width:760px}
+.hero p{font-size:16px;line-height:1.8;color:#e1f0e8;max-width:650px;margin:0}
+.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+.btn{display:inline-block;padding:12px 18px;border-radius:9px;font-weight:800;font-size:12px}
+.btn.primary{background:#fff;color:var(--green)}.btn.secondary{border:1px solid #ffffff55;color:#fff}
+
+/* GENERAL */
+section{padding:65px 0}
+.white{background:#fff}
+.section-title{font-size:29px;margin:0}.section-sub{color:var(--muted);font-size:13px;line-height:1.7;margin:7px 0 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px}
+.section-link{font-size:12px;color:var(--green);font-weight:800}
+.grid{display:grid;gap:15px}
+.cards4{grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card-body{padding:17px}.tag{font-size:9px;color:var(--green);font-weight:900;letter-spacing:.5px}
+.card h3{font-size:15px;margin:7px 0 5px}.card p{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
+.photo{height:170px;background:linear-gradient(135deg,#dfe9e3,#f5f8f6);display:grid;place-items:center;color:#7b8c84;font-size:10px}
+.photo.tall{height:190px}
+
+/* PROGRAM */
+.program-card{padding:20px;min-height:145px}
+.program-card .num{width:36px;height:36px;border-radius:10px;background:var(--soft);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:11px;margin-bottom:15px}
+
+/* FILTERS / DASHBOARD */
+.dashboard{background:#fff;border:1px solid var(--line);border-radius:17px;padding:22px;margin-top:24px}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px}
+.filters select{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 11px;color:#496057;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.kpi{background:var(--bg);border-radius:11px;padding:15px}
+.kpi small{font-size:10px;color:var(--muted)}.kpi b{display:block;font-size:23px;margin-top:5px;color:var(--green)}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:18px}
+.sustain-layout{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:18px;align-items:start}
+.sustain-left{grid-column:1;grid-row:1 / span 3}
+.sustain-right{grid-column:2;display:flex;flex-direction:column;gap:17px}
+.sustain-right .chartbox{width:100%}
+.chartbox{border:1px solid var(--line);border-radius:14px;padding:18px}
+.chartbox h3{font-size:14px;margin:0}.chartbox p{font-size:10px;color:var(--muted)}
+.barrow{display:grid;grid-template-columns:105px 1fr 40px;gap:8px;align-items:center;font-size:11px;margin:12px 0}
+.bar{height:9px;background:#e6ede9;border-radius:99px;overflow:hidden}.bar i{height:100%;display:block;background:var(--green);border-radius:99px}
+.donutwrap{display:flex;align-items:center;gap:22px}.donut{width:165px;height:165px;border-radius:50%;background:#dfe5e1;position:relative;flex:none}
+.donut:after{content:"TOTAL\A PROGRAM";white-space:pre;text-align:center;position:absolute;inset:32px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;font-size:11px;color:#4f6259}
+.legend{font-size:10px;line-height:2}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px}
+.status-note{margin-top:17px;padding:12px;border-radius:9px;background:var(--soft);font-size:10px;color:#496057}
+
+/* COMMUNITY IMPACT */
+.impact-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.impact-tools input,.impact-tools select{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;color:#496057;font-size:12px;min-width:230px;outline:none}
+.impact-tools input:focus,.impact-tools select:focus{border-color:var(--green)}
+.impact-table-wrap{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.impact-table-scroll{height:302px;overflow:auto}
+.impact-table{width:100%;border-collapse:collapse;min-width:900px;font-size:11px}
+.impact-table th{position:sticky;top:0;z-index:2;background:#edf4f0;color:var(--dark);text-align:left;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.impact-table td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+.impact-table tbody tr:nth-child(even){background:#fafcfb}
+.impact-count-note{margin-top:10px;font-size:10px;color:var(--muted)}
+
+/* LOCATION */
+.locations{display:grid;grid-template-columns:1.55fr .85fr;gap:17px;margin-top:23px}
+.map-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.map{height:520px;border:0;background:#e3ebe6;position:relative}
+#locationMap{height:100%;width:100%}
+.map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);flex-wrap:wrap}
+.map-toolbar strong{color:var(--text)}
+.map-btn{display:inline-block;padding:7px 10px;border-radius:8px;background:var(--soft);color:var(--green);font-size:10px;font-weight:800}
+.location-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.location-stat{background:var(--soft);border-radius:11px;padding:13px}
+.location-stat b{display:block;color:var(--green);font-size:20px;margin-bottom:3px}
+.location-stat span{font-size:9px;color:var(--muted)}
+.village-list{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.village-list h3{margin:0 0 5px;font-size:15px}
+.village{padding:13px 0;border-bottom:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;gap:15px}
+.village:last-child{border:0}.village span{color:var(--muted)}
+.location-note{margin-top:14px;padding:12px;border-radius:10px;background:#fff7e6;border:1px solid #f0dfb6;color:#765d20;font-size:10px;line-height:1.6}
+.location-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;height:8cm;max-height:8cm;position:relative}
+.location-table{width:100%;min-width:620px;border-collapse:collapse;font-size:11px}
+.location-table th,.location-table td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+.location-table th{background:#f1f5f3;color:#0b3b2b;font-size:10px;white-space:nowrap;position:sticky;top:0;z-index:3}
+.location-table td:nth-child(n+2){text-align:center;font-weight:700}
+.location-table tbody tr:hover{background:#f8fbf9}
+.leaflet-popup-content{font-family:Inter,Segoe UI,Arial,sans-serif;font-size:11px;line-height:1.5}
+.location-popup h4{font-size:13px;margin:0 0 8px;color:#073c29}
+.location-popup .meta{margin:3px 0}.location-popup .meta b{color:#496057}
+.location-popup .popup-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.location-popup .popup-actions a{padding:6px 8px;border-radius:7px;background:#eef6f1;color:#087443;font-weight:800;font-size:9px}
+@media(max-width:700px){.locations{grid-template-columns:1fr}.map{height:400px}.location-stats{grid-template-columns:1fr 1fr}}
+
+/* IMPACT */
+.impact{background:#edf5f1}.impact-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:22px}
+.impact-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px}.impact-card b{display:block;color:var(--green);font-size:24px}.impact-card span{font-size:10px;color:var(--muted)}
+
+/* TABLE */
+.table-wrap{overflow:auto;margin-top:18px;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:700px;background:#fff;font-size:11px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+th{background:#f4f7f5;color:#496057;font-size:10px}.money{text-align:right;font-weight:700}.stock{font-weight:800;color:var(--green)}
+.badge{display:inline-block;padding:5px 8px;border-radius:99px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800}
+
+/* FOOTER */
+footer{background:#0a3223;color:#dce9e2;padding:32px 5%;display:flex;justify-content:space-between;gap:20px;font-size:11px}
+footer strong{font-size:14px}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .menu{display:none}.cards4{grid-template-columns:repeat(2,1fr)}
+  .kpis{grid-template-columns:repeat(3,1fr)}.impact-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:700px){
+  section{padding:50px 0}.hero{padding:70px 0 78px}
+  .hero h1{font-size:43px}.cards4,.charts,.locations,.sustain-layout{grid-template-columns:1fr}.sustain-left{grid-column:1;grid-row:auto}.sustain-right{grid-column:1}
+  .kpis{grid-template-columns:repeat(2,1fr)}.impact-grid{grid-template-columns:repeat(2,1fr)}
+  .donutwrap{display:block}.donut{margin:auto}.legend{margin-top:15px}
+  footer{display:block}footer div+div{margin-top:12px}
+}
+
+.program-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.program-table-head{padding:18px 18px 12px}
+.program-table-head h3{font-size:14px;margin:0 0 6px}
+.program-table-head p{font-size:10px;color:var(--muted);margin:0}
+.table-scroll{max-height:520px;overflow:auto;position:relative}
+.program-table thead th{position:sticky;top:0;z-index:2}
+.program-table{width:100%;min-width:1200px;border-collapse:collapse;font-size:11px}
+.program-table th{background:#f1f5f3;color:#0b3b2b;text-align:left;font-weight:700;padding:11px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.program-table td{padding:10px 12px;border-bottom:1px solid #edf1ef;vertical-align:top;line-height:1.4}
+.program-table tbody tr:hover{background:#f8fbf9}
+.program-table .empty{padding:22px;text-align:center;color:var(--muted)}
+.legend{display:grid;gap:10px}.legend>div{display:flex;align-items:center;gap:7px}.legend-value{margin-left:3px;font-weight:600}.legend-label{white-space:nowrap}</style>
+</head>
+
+<body>
+
+<nav class="nav">
+  <a class="brand" href="#home">
+    <div class="brandmark">BC</div>
+    <div><strong>BINAAN CSR</strong><small>Community Development Portal</small></div>
+  </a>
+  <div class="menu">
+    <a href="#home">Home</a>
+    <a href="#produk">Produk UMKM</a>
+    <a href="#komoditas">Peternakan / Perikanan / Pertanian</a>
+    <a href="#jasa">UMKM Jasa</a>
+    <a href="#lokasi">Lokasi</a>
+    <a href="#pagu">Pagu Gampong</a>
+    <a href="#impact">Community Impact</a>
+    <a href="#sustainability">Sustainability Program</a>
+    <a href="#galeri">Galeri</a>
+  </div>
+</nav>
+
+<header id="home" class="hero">
+  <div class="container">
+    <div class="eyebrow">DIGITAL MASYARAKAT BINAAN</div>
+    <h1>Community<br>Development Portal</h1>
+    <p>Temukan produk dan usaha masyarakat binaan melalui program PPM-CSR PT Mifa Bersaudara.</p>
+    <div class="buttons">
+      <a class="btn primary" href="#produk">Jelajahi Produk</a>
+      <a class="btn secondary" href="#sustainability">Lihat Sustainability</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="container" style="max-width:800px">
+    <h2 class="section-title">Tentang Binaan CSR</h2>
+    <p class="section-sub">Portal informasi digital yang menampilkan produk, usaha, program, lokasi, perkembangan, dan dampak program PPM-CSR bagi masyarakat binaan.</p>
+  </div>
+</section>
+
+<section id="produk" class="white">
+  <div class="container">
+    <div class="section-head">
+      <div><h2 class="section-title">Produk UMKM</h2><p class="section-sub">Etalase produk masyarakat binaan.</p></div>
+      <a class="section-link" href="#produk">Lihat semua →</a>
+    </div>
+    <div class="grid cards4" style="margin-top:22px">
+      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">KULINER</span><h3>Inabah Bakery</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Produk Tersedia</span></p></div></div>
+      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">PERTANIAN</span><h3>Produk Kelompok Tani</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Produk Tersedia</span></p></div></div>
+      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">JASA</span><h3>Barbershop Binaan</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Tersedia</span></p></div></div>
+      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">KERAJINAN</span><h3>Sewing Group</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Tersedia</span></p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="komoditas">
+  <div class="container">
+    <div class="section-head">
+      <div><h2 class="section-title">Peternakan / Perikanan / Pertanian</h2><p class="section-sub">Program dan usaha berbasis komoditas masyarakat binaan.</p></div>
+    </div>
+    <div class="grid cards4" style="margin-top:22px">
+      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">PETERNAKAN</span><h3>Program Peternakan</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">PERIKANAN</span><h3>Program Perikanan</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">PERTANIAN</span><h3>Program Pertanian</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">KOMODITAS</span><h3>Pengembangan Usaha</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="jasa" class="white">
+  <div class="container">
+    <h2 class="section-title">UMKM Jasa</h2>
+    <p class="section-sub">Usaha jasa masyarakat binaan.</p>
+    <div class="grid cards4" style="margin-top:22px">
+      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>Usaha Jasa Binaan</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>AC Service</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>Barbershop</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>Usaha Lainnya</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="lokasi">
+  <div class="container">
+    <h2 class="section-title">Lokasi</h2>
+
+    <div class="locations">
+      <div class="map-card">
+        <div class="map"><div id="locationMap"></div></div>
+        <div class="map-toolbar">
+          <div><strong>Peta Lokasi Program</strong> • Klik titik untuk melihat informasi program.</div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <a class="map-btn" href="https://www.google.com/maps" target="_blank" rel="noopener">Buka Google Maps</a>
+            <a class="map-btn" href="https://earth.google.com/web/" target="_blank" rel="noopener">Buka Google Earth</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="village-list">
+        <h3>Ringkasan Lokasi</h3>
+
+        <div class="location-stats">
+          <div class="location-stat">
+            <b id="locationWithCoord">0</b>
+            <span>Deskripsi dengan koordinat</span>
+          </div>
+          <div class="location-stat">
+            <b id="locationWithoutCoord">0</b>
+            <span>Deskripsi belum memiliki koordinat</span>
+          </div>
+        </div>
+
+        <div class="location-note" id="locationNote">Menyiapkan data lokasi...</div>
+
+      </div>
+    </div>
+
+    <div class="location-table-wrap">
+      <table class="location-table">
+        <thead>
+          <tr>
+            <th>Penerima Manfaat / Lokasi</th>
+            <th>Ada Lokasi</th>
+            <th>Belum Ada Koordinat</th>
+          </tr>
+        </thead>
+        <tbody id="locationSummaryBody">
+          <tr><td colspan="3" style="text-align:center;color:var(--muted)">Menyiapkan data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="pagu" class="white">
+  <div class="container">
+    <h2 class="section-title">Pagu Gampong</h2>
+    <p class="section-sub">Ringkasan pagu dan realisasi program berdasarkan tahun, gampong, dan jenis program.</p>
+    <div class="dashboard">
+      <div class="filters">
+        <select><option>Semua Tahun</option><option>2026</option><option>2025</option><option>2024</option></select>
+        <select><option>Semua Gampong</option></select>
+        <select><option>Semua Jenis Program</option></select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Gampong</th><th>Program</th><th>Jenis</th><th class="money">Pagu</th><th class="money">Realisasi</th></tr></thead>
+          <tbody>
+            <tr><td>Contoh Gampong</td><td>Program Contoh</td><td>Ekonomi</td><td class="money">—</td><td class="money">—</td></tr>
+            <tr><td>Contoh Gampong</td><td>Program Contoh</td><td>Pertanian</td><td class="money">—</td><td class="money">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="impact" class="impact">
+  <div class="container">
+    <h2 class="section-title">Community Impact</h2>
+    <p class="section-sub">Jumlah penerima manfaat berdasarkan data penerima manfaat.</p>
+
+    <div class="impact-grid">
+      <div class="impact-card"><b id="impactKelompok">—</b><span>Penerima Manfaat Kelompok</span></div>
+      <div class="impact-card"><b id="impactIndividu">—</b><span>Penerima Manfaat Individu</span></div>
+      <div class="impact-card"><b id="impactLaki">—</b><span>Penerima Manfaat Laki-laki</span></div>
+      <div class="impact-card"><b id="impactPerempuan">—</b><span>Penerima Manfaat Perempuan</span></div>
+      <div class="impact-card"><b id="impactOther">—</b><span>Instansi / Other</span></div>
+    </div>
+
+    <div class="impact-tools">
+      <input id="impactSearchName" list="impactNameList" type="search" placeholder="Cari Nama Penerima / Kelompok..." autocomplete="off">
+      <datalist id="impactNameList"></datalist>
+      <select id="impactFilterLocation">
+        <option value="">Semua Gampong</option>
+      </select>
+    </div>
+
+    <div class="impact-count-note" id="impactCountNote">Menyiapkan data...</div>
+
+    <div class="impact-table-wrap">
+      <div class="impact-table-scroll">
+        <table class="impact-table">
+          <thead>
+            <tr>
+              <th>Nama Penerima/Kelompok</th>
+              <th>Gampong</th>
+              <th>Jenis Kelamin</th>
+              <th>Nama Program</th>
+              <th>Tahun Program</th>
+              <th>Jenis Bantuan</th>
+            </tr>
+          </thead>
+          <tbody id="impactTableBody">
+            <tr><td colspan="6" style="text-align:center;color:var(--muted)">Memuat data penerima manfaat...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sustainability" class="white">
+  <div class="container">
+    <h2 class="section-title">Sustainability Program</h2>
+    <p class="section-sub">Monitoring berdasarkan jumlah program, kondisi, aktivitas, lokasi, dan hasil monitoring.</p>
+    <div class="dashboard">
+      <div class="filters sustainability-filters">
+        <select id="filterTahun">
+          <option value="">Semua Tahun</option>
+        </select>
+        <select id="filterPenerima">
+          <option value="">Semua Penerima Manfaat</option>
+        </select>
+        <select id="filterActivity">
+          <option value="">Semua Activity</option>
+        </select>
+        <select id="filterSummary">
+          <option value="">Semua Summary Monev</option>
+        </select>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><small>Total Program</small><b>—</b></div>
+        <div class="kpi"><small>Masih Berjalan</small><b>—</b></div>
+        <div class="kpi"><small>Mati</small><b>—</b></div>
+        <div class="kpi"><small>Tidak Berkembang / Kurang Baik</small><b>—</b></div>
+        <div class="kpi"><small>Belum Monitoring</small><b>—</b></div>
+      </div>
+      <div class="sustain-layout">
+        <div class="sustain-left">
+          <div class="chartbox">
+            <h3>Penerima Manfaat per Gampong</h3>
+            <p>Jumlah penerima manfaat berdasarkan lokasi gampong.</p>
+            <div class="barrow"><span>Gampong A</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Gampong B</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Gampong C</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Gampong D</span><div class="bar"><i></i></div><b>—</b></div>
+          </div>
+        </div>
+
+        <div class="sustain-right">
+          <div class="chartbox">
+            <h3>Summary Monev</h3>
+            <p>Distribusi kondisi program berdasarkan kolom Summary Monev.</p>
+            <div class="barrow"><span>Masih Berjalan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Mati</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Tidak Berkembang</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Belum Monitoring</span><div class="bar"><i></i></div><b>—</b></div>
+          </div>
+
+          <div class="chartbox">
+            <h3>Activity</h3>
+            <p>Jumlah program berdasarkan Activity.</p>
+            <div class="barrow"><span>Peternakan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Perikanan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Pertanian</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Perkebunan</span><div class="bar"><i></i></div><b>—</b></div>
+            <div class="barrow"><span>Ekonomi</span><div class="bar"><i></i></div><b>—</b></div>
+          </div>
+
+          <div class="chartbox">
+            <h3>Activity × Summary Monev</h3>
+            <p>Perbandingan aktivitas dengan kondisi hasil monitoring.</p>
+            <div class="donutwrap"><div class="donut"></div><div class="legend" id="summaryDonutLegend">
+              <div><span class="dot"></span><span class="legend-label">Masih Berjalan</span><b class="legend-value">0</b></div>
+              <div><span class="dot"></span><span class="legend-label">Mati</span><b class="legend-value">0</b></div>
+              <div><span class="dot"></span><span class="legend-label">Tidak Berkembang</span><b class="legend-value">0</b></div>
+              <div><span class="dot"></span><span class="legend-label">Belum Monitoring</span><b class="legend-value">0</b></div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="program-table-wrap">
+        <div class="program-table-head">
+          <h3>Daftar Program</h3>
+          <p>Daftar program berdasarkan data <b>Monitoring Code</b> sesuai filter yang dipilih. Monitoring Code dapat tampil berulang jika memiliki Deskripsi yang berbeda.</p>
+        </div>
+        <div class="table-scroll">
+          <table class="program-table">
+            <thead>
+              <tr>
+                <th>Monitoring Code</th>
+                <th>Deskripsi</th>
+                <th>Activity</th>
+                <th>Sub-Kategori</th>
+                <th>Detail Benefit Recipients</th>
+                <th>Hasil Monev Sustain</th>
+                <th>Status Monitoring (Sustain)</th>
+                <th>Tgl Monev Sustain</th>
+                <th>Summary Monev</th>
+              </tr>
+            </thead>
+            <tbody id="programTableBody">
+              <tr><td class="empty" colspan="9">Memuat data program...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="status-note"><b>Sumber data:</b> database monitoring PPM-CSR. Data budget tidak digunakan pada dashboard Sustainability.</div>
+    </div>
+  </div>
+</section>
+
+<section id="galeri">
+  <div class="container">
+    <h2 class="section-title">Galeri</h2>
+    <p class="section-sub">Foto kegiatan masyarakat binaan dengan deskripsi singkat.</p>
+    <div class="grid cards4" style="margin-top:22px">
+      <div class="card"><div class="photo tall">FOTO KEGIATAN</div><div class="card-body"><h3>Pelaksanaan Program</h3><p>Deskripsi singkat kegiatan.</p></div></div>
+      <div class="card"><div class="photo tall">FOTO KEGIATAN</div><div class="card-body"><h3>Pendampingan Masyarakat</h3><p>Deskripsi singkat kegiatan.</p></div></div>
+      <div class="card"><div class="photo tall">FOTO KEGIATAN</div><div class="card-body"><h3>Pengembangan Usaha</h3><p>Deskripsi singkat kegiatan.</p></div></div>
+      <div class="card"><div class="photo tall">FOTO KEGIATAN</div><div class="card-body"><h3>Kegiatan Masyarakat</h3><p>Deskripsi singkat kegiatan.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><strong>BINAAN CSR</strong><br>Digital Community Portal<br>Community Development Portal</div>
+  <div>Produk Lokal • Program PPM-CSR</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<!-- COMMUNITY IMPACT API -->
+<script>
+const COMMUNITY_API_URL = "https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec?sheet=penerima_manfaat";
+let communityImpactData = [];
+
+function cleanImpactValue(value){
+  return String(value ?? "").trim();
+}
+
+function normalizeImpactCategory(value){
+  const s = cleanImpactValue(value).toLowerCase();
+  if (s.includes("kelompok")) return "Kelompok";
+  if (s.includes("individu")) return "Individu";
+  return "";
+}
+
+function normalizeGender(value){
+  const s = cleanImpactValue(value).toLowerCase();
+  if (s.includes("laki")) return "Laki-laki";
+  if (s.includes("perempuan")) return "Perempuan";
+  if (s.includes("other") || s.includes("lain")) return "Other";
+  return "";
+}
+
+async function loadCommunityImpactData(){
+  try{
+    const response = await fetch(COMMUNITY_API_URL);
+    if(!response.ok) throw new Error("Gagal mengambil data Community Impact");
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : payload.data;
+    if(!Array.isArray(data)) throw new Error("Format data Community Impact tidak sesuai");
+    communityImpactData = data;
+    buildCommunityImpactFilters(data);
+    updateCommunityImpact(data);
+  }catch(error){
+    console.error("Community Impact API Error:", error);
+    const note = document.getElementById("impactCountNote");
+    if(note) note.textContent = "Data Community Impact belum dapat dimuat. Pastikan API sheet penerima_manfaat sudah aktif.";
+  }
+}
+
+function buildCommunityImpactFilters(data){
+  const nameList = document.getElementById("impactNameList");
+  const locationSelect = document.getElementById("impactFilterLocation");
+  if(!nameList || !locationSelect) return;
+
+  const names = [...new Set(data.map(r=>cleanImpactValue(r["Nama Penerima/Kelompok"])).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,"id",{sensitivity:"base"}));
+  nameList.innerHTML = names.map(name=>`<option value="${escapeHtml(name)}"></option>`).join("");
+
+  const locations = [...new Set(data.map(r=>cleanImpactValue(r["Gampong"])).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,"id",{sensitivity:"base"}));
+  locationSelect.innerHTML = '<option value="">Semua Gampong</option>';
+  locations.forEach(location=>{
+    const option=document.createElement("option");
+    option.value=location;
+    option.textContent=location;
+    locationSelect.appendChild(option);
+  });
+
+  const search=document.getElementById("impactSearchName");
+  search?.addEventListener("input",applyCommunityImpactFilters);
+  locationSelect.addEventListener("change",applyCommunityImpactFilters);
+}
+
+function applyCommunityImpactFilters(){
+  const name = cleanImpactValue(document.getElementById("impactSearchName")?.value);
+  const location = cleanImpactValue(document.getElementById("impactFilterLocation")?.value);
+  const needle = name.toLowerCase();
+
+  const filtered = communityImpactData.filter(row=>{
+    const rowName=cleanImpactValue(row["Nama Penerima/Kelompok"]);
+    const rowLocation=cleanImpactValue(row["Gampong"]);
+    if(needle && !rowName.toLowerCase().includes(needle)) return false;
+    if(location && rowLocation !== location) return false;
+    return true;
+  });
+
+  updateCommunityImpact(filtered);
+}
+
+function updateCommunityImpact(data){
+  let kelompok=0, individu=0, laki=0, perempuan=0, other=0;
+  data.forEach(row=>{
+    const category=normalizeImpactCategory(row["Kelompok/Individu"]);
+    const gender=normalizeGender(row["Jenis Kelamin"]);
+    if(category === "Kelompok") kelompok++;
+    if(category === "Individu") individu++;
+    if(gender === "Laki-laki") laki++;
+    if(gender === "Perempuan") perempuan++;
+    if(gender === "Other") other++;
+  });
+
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value.toLocaleString("id-ID");};
+  set("impactKelompok",kelompok);
+  set("impactIndividu",individu);
+  set("impactLaki",laki);
+  set("impactPerempuan",perempuan);
+  set("impactOther",other);
+
+  const note=document.getElementById("impactCountNote");
+  if(note) note.textContent=`Menampilkan ${data.length.toLocaleString("id-ID")} data penerima manfaat.`;
+
+  const body=document.getElementById("impactTableBody");
+  if(!body) return;
+  body.innerHTML="";
+  if(data.length===0){
+    body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted)">Tidak ada data sesuai pencarian.</td></tr>';
+    return;
+  }
+  data.forEach(row=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${escapeHtml(cleanImpactValue(row["Nama Penerima/Kelompok"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Gampong"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Jenis Kelamin"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Nama Program"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Tahun Program"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Jenis Bantuan/Ternak/Budidaya/Produk"]) || "-")}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+</script>
+
+<!-- SUSTAINABILITY API -->
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec";
+
+let sustainabilityData = [];
+
+async function loadSustainabilityData() {
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet");
+
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : payload.data;
+
+    if (!Array.isArray(data)) {
+      throw new Error("Format data API tidak sesuai");
+    }
+
+    sustainabilityData = data;
+
+    updateLocationSection(sustainabilityData);
+
+    buildSustainabilityFilters(sustainabilityData);
+    updateSustainabilityDashboard(sustainabilityData);
+    setupSustainabilityFilters();
+  } catch (error) {
+    console.error("API Error:", error);
+  }
+}
+
+let locationMap = null;
+let locationLayer = null;
+
+function parseCoordinate(value) {
+  const text = cleanValue(value);
+  if (!text) return null;
+
+  // AppSheet Location umum: "4.135163, 96.168977"
+  const match = text.match(/(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)/);
+  if (!match) return null;
+
+  const lat = Number(match[1]);
+  const lng = Number(match[2]);
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+
+  return { lat, lng };
+}
+
+function googleMapsUrl(lat, lng) {
+  return `https://www.google.com/maps?q=${lat},${lng}`;
+}
+
+function googleEarthUrl(lat, lng) {
+  return `https://earth.google.com/web/@${lat},${lng},1000a,35y,0h,0t,0r`;
+}
+
+function updateLocationSection(data) {
+  const mapElement = document.getElementById("locationMap");
+  const withCoordElement = document.getElementById("locationWithCoord");
+  const withoutCoordElement = document.getElementById("locationWithoutCoord");
+  const noteElement = document.getElementById("locationNote");
+  const tableBody = document.getElementById("locationSummaryBody");
+
+  if (!mapElement) return;
+
+  // Pastikan hanya data dari Web_binaan yang dipakai.
+  const records = Array.isArray(data) ? data : [];
+
+  const withCoordinate = [];
+  const withoutCoordinate = [];
+  const byRecipient = {};
+
+  records.forEach(row => {
+    const description = cleanValue(row["Deskripsi"]);
+    const recipient = cleanValue(row["Penerima Manfaat"]);
+    const coordinate = parseCoordinate(row["Koordinat Sustain"]);
+
+    // Hanya hitung record yang mempunyai Deskripsi.
+    if (!description) return;
+
+    const key = recipient || "Belum diisi";
+
+    if (!byRecipient[key]) {
+      byRecipient[key] = { withCoord: 0, withoutCoord: 0 };
+    }
+
+    if (coordinate) {
+      withCoordinate.push({ row, coordinate, description, recipient });
+      byRecipient[key].withCoord += 1;
+    } else {
+      withoutCoordinate.push({ row, description, recipient });
+      byRecipient[key].withoutCoord += 1;
+    }
+  });
+
+  if (withCoordElement) {
+    withCoordElement.textContent = withCoordinate.length.toLocaleString("id-ID");
+  }
+
+  if (withoutCoordElement) {
+    withoutCoordElement.textContent = withoutCoordinate.length.toLocaleString("id-ID");
+  }
+
+  if (noteElement) {
+    noteElement.innerHTML = `<strong>${withoutCoordinate.length.toLocaleString("id-ID")} deskripsi</strong> belum memiliki koordinat. Data tersebut belum ditampilkan sebagai titik di peta. Koordinat dapat diisi melalui AppSheet pada kolom <strong>Koordinat Sustain</strong>.`;
+  }
+
+  // Tabel ringkasan penerima manfaat/lokasi.
+  if (tableBody) {
+    tableBody.innerHTML = "";
+
+    const entries = Object.entries(byRecipient)
+      .sort((a, b) => a[0].localeCompare(b[0], "id", { sensitivity: "base", numeric: true }));
+
+    if (entries.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--muted)">Belum ada data lokasi.</td></tr>`;
+    } else {
+      entries.forEach(([recipient, counts]) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(recipient)}</td>
+          <td>${counts.withCoord.toLocaleString("id-ID")}</td>
+          <td>${counts.withoutCoord.toLocaleString("id-ID")}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+  }
+
+  // Inisialisasi peta satu kali.
+  if (!window.L) {
+    noteElement && (noteElement.textContent = "Peta belum dapat dimuat. Silakan periksa koneksi internet.");
+    return;
+  }
+
+  if (!locationMap) {
+    locationMap = L.map(mapElement, {
+      scrollWheelZoom: true,
+      zoomControl: true
+    });
+
+    // Basemap utama menggunakan Esri World Street Map agar
+    // latar peta tetap tampil pada halaman publik.
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri'
+    }).addTo(locationMap);
+
+    locationLayer = L.layerGroup().addTo(locationMap);
+  } else {
+    locationLayer.clearLayers();
+  }
+
+  if (withCoordinate.length === 0) {
+    locationMap.setView([4.135163, 96.168977], 12);
+    setTimeout(() => locationMap.invalidateSize(), 150);
+    return;
+  }
+
+  const bounds = [];
+
+  withCoordinate.forEach(item => {
+    const { row, coordinate, description, recipient } = item;
+    const year = cleanValue(row["Tahun Budget"]);
+    const summary = cleanValue(row["Summary Monev"]);
+
+    const marker = L.marker([coordinate.lat, coordinate.lng]);
+
+    const popup = `
+      <div class="location-popup">
+        <div class="meta"><b>Deskripsi Program:</b></div>
+        <h4>${escapeHtml(description)}</h4>
+        <div class="meta"><b>Tahun Program:</b> ${escapeHtml(year || "-")}</div>
+        <div class="meta"><b>Lokasi:</b> ${escapeHtml(recipient || "-")}</div>
+        <div class="meta"><b>Summary Monev:</b> ${escapeHtml(summary || "-")}</div>
+        <div class="meta"><b>Koordinat:</b> ${coordinate.lat.toFixed(6)}, ${coordinate.lng.toFixed(6)}</div>
+        <div class="popup-actions">
+          <a href="${googleMapsUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Maps</a>
+          <a href="${googleEarthUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Earth</a>
+        </div>
+      </div>
+    `;
+
+    marker.bindPopup(popup, { maxWidth: 320 });
+    marker.bindTooltip(description, { direction: "top", offset: [0, -8] });
+    marker.addTo(locationLayer);
+    bounds.push([coordinate.lat, coordinate.lng]);
+  });
+
+  locationMap.fitBounds(bounds, {
+    padding: [30, 30],
+    maxZoom: 15
+  });
+
+  setTimeout(() => locationMap.invalidateSize(), 150);
+}
+
+function getCountMonev(row) {
+  const value = Number(row["Count Monev"]);
+  return Number.isFinite(value) ? value : 0;
+}
+
+function normalizeSummary(value) {
+  const s = String(value || "").toLowerCase().trim();
+
+  if (s.includes("belum monitoring")) return "Belum Monitoring";
+  if (s.includes("tidak berkembang") || s.includes("kurang baik")) return "Tidak Berkembang";
+  if (s === "mati" || s.includes("mati")) return "Mati";
+  if (s.includes("masih berjalan")) return "Masih Berjalan";
+  if (s === "baik" || s.includes("baik/berjalan") || s === "berjalan") return "Masih Berjalan";
+  if (s === "") return "Belum Monitoring";
+
+  return "Belum Monitoring";
+}
+
+function cleanValue(value) {
+  return String(value ?? "").trim();
+}
+
+function uniqueSorted(values) {
+  return [...new Set(values.map(cleanValue).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "id", { sensitivity: "base" }));
+}
+
+function buildSustainabilityFilters(data) {
+  const yearSelect = document.getElementById("filterTahun");
+  const recipientSelect = document.getElementById("filterPenerima");
+  const activitySelect = document.getElementById("filterActivity");
+  const summarySelect = document.getElementById("filterSummary");
+
+  if (!yearSelect || !recipientSelect || !activitySelect || !summarySelect) return;
+
+  const years = uniqueSorted(
+    data.map(row => cleanValue(row["Tahun Budget"]))
+  ).sort((a, b) => {
+    const na = Number(a), nb = Number(b);
+    if (Number.isFinite(na) && Number.isFinite(nb)) return nb - na;
+    return b.localeCompare(a);
+  });
+
+  const recipients = uniqueSorted(
+    data.map(row => row["Penerima Manfaat"])
+  );
+
+  const activities = uniqueSorted(
+    data.map(row => row["Activity"])
+  );
+
+  const summaryOptions = [
+    "Masih Berjalan",
+    "Mati",
+    "Tidak Berkembang / Kurang Baik",
+    "Belum Monitoring"
+  ];
+
+  yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
+  years.forEach(year => {
+    const option = document.createElement("option");
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  });
+
+  recipientSelect.innerHTML = '<option value="">Semua Penerima Manfaat</option>';
+  recipients.forEach(recipient => {
+    const option = document.createElement("option");
+    option.value = recipient;
+    option.textContent = recipient;
+    recipientSelect.appendChild(option);
+  });
+
+  activitySelect.innerHTML = '<option value="">Semua Activity</option>';
+  activities.forEach(activity => {
+    const option = document.createElement("option");
+    option.value = activity;
+    option.textContent = activity;
+    activitySelect.appendChild(option);
+  });
+
+  summarySelect.innerHTML = '<option value="">Semua Summary Monev</option>';
+  summaryOptions.forEach(summary => {
+    const option = document.createElement("option");
+    option.value = summary;
+    option.textContent = summary;
+    summarySelect.appendChild(option);
+  });
+}
+
+function setupSustainabilityFilters() {
+  const yearSelect = document.getElementById("filterTahun");
+  const recipientSelect = document.getElementById("filterPenerima");
+  const activitySelect = document.getElementById("filterActivity");
+  const summarySelect = document.getElementById("filterSummary");
+
+  if (!yearSelect || !recipientSelect || !activitySelect || !summarySelect) return;
+
+  // Hindari memasang listener lebih dari sekali.
+  if (yearSelect.dataset.ready === "1") return;
+
+  const applyFilters = () => {
+    const selectedYear = cleanValue(yearSelect.value);
+    const selectedRecipient = cleanValue(recipientSelect.value);
+    const selectedActivity = cleanValue(activitySelect.value);
+    const selectedSummary = cleanValue(summarySelect.value);
+
+    const filteredData = sustainabilityData.filter(row => {
+      const year = cleanValue(row["Tahun Budget"]);
+      const recipient = cleanValue(row["Penerima Manfaat"]);
+      const activity = cleanValue(row["Activity"]);
+      const summary = normalizeSummary(row["Summary Monev"]);
+      const summaryLabel = summary === "Tidak Berkembang"
+        ? "Tidak Berkembang / Kurang Baik"
+        : summary;
+
+      if (selectedYear && year !== selectedYear) return false;
+      if (selectedRecipient && recipient !== selectedRecipient) return false;
+      if (selectedActivity && activity !== selectedActivity) return false;
+      if (selectedSummary && summaryLabel !== selectedSummary) return false;
+
+      return true;
+    });
+
+    updateSustainabilityDashboard(filteredData);
+  };
+
+  yearSelect.addEventListener("change", applyFilters);
+  recipientSelect.addEventListener("change", applyFilters);
+  activitySelect.addEventListener("change", applyFilters);
+  summarySelect.addEventListener("change", applyFilters);
+
+  yearSelect.dataset.ready = "1";
+}
+
+function renderProgramTable(data) {
+  const tbody = document.getElementById("programTableBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  // Tabel menampilkan SETIAP baris hasil filter.
+  // Monitoring Code boleh berulang karena satu Monitoring Code
+  // dapat memiliki beberapa Deskripsi / record program yang berbeda.
+  const programs = data.filter(row => {
+    return cleanValue(row["Monitoring Code"]) !== "";
+  });
+
+  if (programs.length === 0) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="empty" colspan="9">Tidak ada program sesuai filter yang dipilih.</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+
+  programs.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><b>${escapeHtml(cleanValue(row["Monitoring Code"]))}</b></td>
+      <td>${escapeHtml(cleanValue(row["Deskripsi"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Activity"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Sub-Kategori"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Detail Benefit Recipients"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Hasil Monev Sustain"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Status Monitoring (Sustain)"]))}</td>
+      <td>${escapeHtml(formatDateValue(row["Tgl Monev Sustain"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Summary Monev"]))}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function formatDateValue(value) {
+  if (value === null || value === undefined || value === "") return "";
+
+  const text = String(value).trim();
+  if (!text) return "";
+
+  // Pertahankan format tanggal yang dikirim API bila sudah berupa tanggal.
+  // Hindari menampilkan 1 Januari 1900 untuk nilai kosong/0.
+  if (text === "0" || text === "1/0/1900" || text === "01/01/1900") return "";
+
+  const date = new Date(value);
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  }
+
+  return text;
+}
+
+function updateSustainabilityDashboard(data) {
+  const section = document.querySelector("#sustainability");
+  if (!section || !Array.isArray(data)) return;
+
+  // Hanya data Sustain/No selain "No".
+  const records = data.filter(row => {
+    const sustain = cleanValue(row["Sustain/No"]).toLowerCase();
+    return sustain !== "no";
+  });
+
+  // Tabel program mengikuti setiap baris hasil filter.
+  // Monitoring Code boleh berulang jika Deskripsi/record berbeda.
+  renderProgramTable(records);
+
+  // =====================================================
+  // SUMMARY MONEV - menggunakan Count Monev
+  // =====================================================
+  let totalProgram = 0;
+  const summaryCount = {
+    "Masih Berjalan": 0,
+    "Mati": 0,
+    "Tidak Berkembang": 0,
+    "Belum Monitoring": 0
+  };
+
+  records.forEach(row => {
+    const count = getCountMonev(row);
+    if (count <= 0) return;
+
+    const summary = normalizeSummary(row["Summary Monev"]);
+    totalProgram += count;
+
+    if (Object.prototype.hasOwnProperty.call(summaryCount, summary)) {
+      summaryCount[summary] += count;
+    }
+  });
+
+  // KPI
+  const kpis = section.querySelectorAll(".kpi b");
+  const labels = section.querySelectorAll(".kpi small");
+
+  if (kpis.length >= 5) {
+    kpis[0].textContent = totalProgram.toLocaleString("id-ID");
+    kpis[1].textContent = summaryCount["Masih Berjalan"].toLocaleString("id-ID");
+    kpis[2].textContent = summaryCount["Mati"].toLocaleString("id-ID");
+    kpis[3].textContent = summaryCount["Tidak Berkembang"].toLocaleString("id-ID");
+    kpis[4].textContent = summaryCount["Belum Monitoring"].toLocaleString("id-ID");
+  }
+
+  if (labels.length >= 5) {
+    labels[0].textContent = "Total Program";
+    labels[1].textContent = "Masih Berjalan";
+    labels[2].textContent = "Mati";
+    labels[3].textContent = "Tidak Berkembang / Kurang Baik";
+    labels[4].textContent = "Belum Monitoring";
+  }
+
+  const chartBoxes = section.querySelectorAll(".chartbox");
+  let summaryChart = null;
+  let activityChart = null;
+  let villageChart = null;
+
+  chartBoxes.forEach(box => {
+    const title = box.querySelector("h3");
+    if (!title) return;
+
+    const t = title.textContent.toLowerCase().trim();
+    if (t === "summary monev") summaryChart = box;
+    if (t === "activity") activityChart = box;
+    if (t.includes("penerima manfaat per gampong")) villageChart = box;
+  });
+
+  // =====================================================
+  // GRAFIK SUMMARY MONEV
+  // =====================================================
+  if (summaryChart) {
+    const bars = summaryChart.querySelectorAll(".barrow");
+    const maxValue = Math.max(
+      summaryCount["Masih Berjalan"],
+      summaryCount["Mati"],
+      summaryCount["Tidak Berkembang"],
+      summaryCount["Belum Monitoring"],
+      1
+    );
+
+    bars.forEach(bar => {
+      const label = bar.querySelector("span");
+      const fill = bar.querySelector(".bar i");
+      const number = bar.querySelector("b");
+      if (!label) return;
+
+      const name = label.textContent.toLowerCase().trim();
+      let value = 0;
+
+      if (name.includes("masih berjalan")) value = summaryCount["Masih Berjalan"];
+      else if (name === "mati") value = summaryCount["Mati"];
+      else if (name.includes("tidak berkembang") || name.includes("kurang baik")) value = summaryCount["Tidak Berkembang"];
+      else if (name.includes("belum monitoring")) value = summaryCount["Belum Monitoring"];
+
+      if (fill) fill.style.width = ((value / maxValue) * 100) + "%";
+      if (number) number.textContent = value.toLocaleString("id-ID");
+    });
+  }
+
+  // =====================================================
+  // GRAFIK ACTIVITY - menggunakan Count Monev
+  // =====================================================
+  const activities = ["Peternakan", "Perikanan", "Pertanian", "Perkebunan", "Ekonomi"];
+  const activityCount = {};
+  activities.forEach(name => activityCount[name] = 0);
+
+  records.forEach(row => {
+    const activity = cleanValue(row["Activity"]).toLowerCase();
+    const count = getCountMonev(row);
+    if (!activity || count <= 0) return;
+
+    activities.forEach(name => {
+      if (activity === name.toLowerCase()) activityCount[name] += count;
+    });
+  });
+
+  if (activityChart) {
+    const bars = activityChart.querySelectorAll(".barrow");
+    const maxActivity = Math.max(...activities.map(name => activityCount[name]), 1);
+
+    bars.forEach(bar => {
+      const label = bar.querySelector("span");
+      const fill = bar.querySelector(".bar i");
+      const number = bar.querySelector("b");
+      if (!label) return;
+
+      const name = label.textContent.trim();
+      const value = activityCount[name] || 0;
+
+      if (fill) fill.style.width = ((value / maxActivity) * 100) + "%";
+      if (number) number.textContent = value.toLocaleString("id-ID");
+    });
+  }
+
+  // =====================================================
+  // PENERIMA MANFAAT PER GAMPONG
+  // Hanya Summary Monev: Masih Berjalan + Tidak Berkembang
+  // Nilai: Count Monev
+  // =====================================================
+  const villageCount = {};
+
+  records.forEach(row => {
+    const village = cleanValue(row["Penerima Manfaat"]);
+    const count = getCountMonev(row);
+    const summary = normalizeSummary(row["Summary Monev"]);
+
+    if (!village || count <= 0) return;
+    if (summary !== "Masih Berjalan" && summary !== "Tidak Berkembang") return;
+
+    villageCount[village] = (villageCount[village] || 0) + count;
+  });
+
+  if (villageChart) {
+    const oldBars = villageChart.querySelectorAll(".barrow");
+    const container = oldBars.length > 0 ? oldBars[0].parentElement : villageChart;
+
+    oldBars.forEach(row => row.remove());
+
+    // Hapus pesan kosong lama jika ada.
+    villageChart.querySelectorAll(".village-empty").forEach(el => el.remove());
+
+    const villages = Object.entries(villageCount).sort((a, b) => b[1] - a[1]);
+    const maxVillage = Math.max(...villages.map(item => item[1]), 1);
+
+    if (villages.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "status-note village-empty";
+      empty.textContent = "Belum ada data gampong untuk filter yang dipilih.";
+      container.appendChild(empty);
+    } else {
+      villages.forEach(([village, value]) => {
+        const row = document.createElement("div");
+        row.className = "barrow";
+        const width = (value / maxVillage) * 100;
+
+        row.innerHTML = `
+          <span>${escapeHtml(village)}</span>
+          <div class="bar"><i style="width:${width}%"></i></div>
+          <b>${value.toLocaleString("id-ID")}</b>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+  }
+
+  // =====================================================
+  // DONUT ACTIVITY × SUMMARY MONEV
+  // =====================================================
+  const donut = section.querySelector(".donut");
+
+  if (donut) {
+    const total = totalProgram || 1;
+    const running = summaryCount["Masih Berjalan"];
+    const mati = summaryCount["Mati"];
+    const tidakBerkembang = summaryCount["Tidak Berkembang"];
+    const belumMonitoring = summaryCount["Belum Monitoring"];
+
+    const p1 = running / total * 100;
+    const p2 = mati / total * 100;
+    const p3 = tidakBerkembang / total * 100;
+
+    donut.style.background = `conic-gradient(
+      #087443 0 ${p1}%,
+      #c86b5e ${p1}% ${p1 + p2}%,
+      #e3a84b ${p1 + p2}% ${p1 + p2 + p3}%,
+      #dfe5e1 ${p1 + p2 + p3}% 100%
+    )`;
+
+    let donutStyle = document.getElementById("dynamic-donut-style");
+    if (!donutStyle) {
+      donutStyle = document.createElement("style");
+      donutStyle.id = "dynamic-donut-style";
+      document.head.appendChild(donutStyle);
+    }
+
+    donutStyle.textContent = `
+      .donut::after {
+        content: "TOTAL\\A PROGRAM\\A ${totalProgram.toLocaleString("id-ID")}";
+        white-space: pre;
+        text-align: center;
+        line-height: 1.5;
+      }
+    `;
+
+    const legend = section.querySelector("#summaryDonutLegend");
+    if (legend) {
+      const items = legend.querySelectorAll(".legend-value");
+      const values = [running, mati, tidakBerkembang, belumMonitoring];
+      items.forEach((item, index) => {
+        if (index < values.length) {
+          item.textContent = values[index].toLocaleString("id-ID");
+        }
+      });
+    }
+  }
+
+  console.log("===== SUSTAINABILITY =====");
+  console.log("Total Program:", totalProgram);
+  console.log("Masih Berjalan:", summaryCount["Masih Berjalan"]);
+  console.log("Mati:", summaryCount["Mati"]);
+  console.log("Tidak Berkembang:", summaryCount["Tidak Berkembang"]);
+  console.log("Belum Monitoring:", summaryCount["Belum Monitoring"]);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadSustainabilityData();
+  loadCommunityImpactData();
+});
+</script>
+
+</body>
+</html>
