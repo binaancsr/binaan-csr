@@ -58,18 +58,22 @@ section{padding:65px 0}
 .product-photo{height:205px;background:linear-gradient(135deg,#dfe9e3,#f5f8f6);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .product-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .product-photo .photo-placeholder{font-size:10px;color:#7b8c84}
-.product-body{padding:16px;display:flex;flex-direction:column;gap:7px;flex:1}
-.product-body h3{font-size:17px;margin:0;color:var(--dark);line-height:1.3}
-.product-meta{font-size:11px;color:var(--muted);line-height:1.55}
+.product-body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.product-body h3{font-size:18px;margin:0;color:var(--dark);line-height:1.25}
+.product-meta{font-size:11px;color:var(--muted);line-height:1.5}
 .product-meta b{color:var(--text);font-weight:700}
-.product-status{display:inline-flex;align-self:flex-start;padding:5px 9px;border-radius:99px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800}
-.product-wa{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:auto;padding:10px 12px;border-radius:9px;background:var(--green);color:#fff;font-size:11px;font-weight:800}
+.product-subline{font-size:11px;color:var(--muted);line-height:1.45;margin-top:-2px}
+.product-owner{font-size:12px;color:var(--text);font-weight:700;margin-top:3px}
+.product-stock{font-size:11px;color:var(--muted);line-height:1.45}
+.product-stock strong{color:var(--text)}
+.product-status{display:inline-flex;align-self:flex-start;padding:6px 10px;border-radius:99px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800;margin-top:2px}
+.product-wa{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:auto;padding:11px 12px;border-radius:9px;background:var(--green);color:#fff;font-size:11px;font-weight:800}
 .product-wa:hover{background:var(--green2)}
 .product-wa.disabled{background:#e7ece9;color:#87928c;pointer-events:none}
-.product-location{font-size:11px;color:var(--muted);line-height:1.5}
+.product-location{font-size:11px;color:var(--muted);line-height:1.5;margin-top:1px}
 .product-location b{color:var(--text);font-weight:700}
-.product-location-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
-.product-location-actions a{padding:6px 8px;border-radius:7px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800}
+.product-location-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.product-location-actions a{padding:7px 9px;border-radius:8px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800}
 .product-note{margin-top:12px;font-size:10px;color:var(--muted)}
 .product-empty{grid-column:1/-1;padding:30px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:12px}
 
@@ -99,8 +103,17 @@ section{padding:65px 0}
 .status-note{margin-top:17px;padding:12px;border-radius:9px;background:var(--soft);font-size:10px;color:#496057}
 
 /* COMMUNITY IMPACT */
-.impact-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-.impact-tools input,.impact-tools select{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;color:#496057;font-size:12px;min-width:230px;outline:none}
+.impact{background:#eef6f1}
+.impact .section-title{font-size:42px;line-height:1.1;color:var(--dark)}
+.impact .section-sub{font-size:15px;margin-top:12px}
+.impact-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:17px;margin-top:34px}
+.impact-card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:30px 28px;min-height:136px;display:flex;flex-direction:column;justify-content:center}
+.impact-card b{display:block;color:var(--green);font-size:36px;line-height:1;font-weight:800;margin-bottom:14px}
+.impact-card span{font-size:13px;color:var(--muted);line-height:1.4}
+.impact-tools{display:flex;gap:16px;flex-wrap:wrap;margin-top:32px}
+.impact-tools input,.impact-tools select{height:60px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:0 19px;color:#496057;font-size:15px;min-width:345px;outline:none}
+.impact-tools input{flex:0 1 345px}
+.impact-tools select{flex:0 1 487px}
 .impact-tools input:focus,.impact-tools select:focus{border-color:var(--green)}
 .impact-table-wrap{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .impact-table-scroll{height:302px;overflow:auto}
@@ -306,30 +319,6 @@ footer strong{font-size:14px}
   </div>
 </section>
 
-<!-- PAGU -->
-<section id="pagu" class="white">
-  <div class="container">
-    <h2 class="section-title">Pagu Gampong</h2>
-    <p class="section-sub">Ringkasan pagu dan realisasi program berdasarkan tahun, gampong, dan jenis program.</p>
-    <div class="dashboard">
-      <div class="filters">
-        <select><option>Semua Tahun</option><option>2026</option><option>2025</option><option>2024</option></select>
-        <select><option>Semua Gampong</option></select>
-        <select><option>Semua Jenis Program</option></select>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Gampong</th><th>Program</th><th>Jenis</th><th class="money">Pagu</th><th class="money">Realisasi</th></tr></thead>
-          <tbody>
-            <tr><td>Contoh Gampong</td><td>Program Contoh</td><td>Ekonomi</td><td class="money">—</td><td class="money">—</td></tr>
-            <tr><td>Contoh Gampong</td><td>Program Contoh</td><td>Pertanian</td><td class="money">—</td><td class="money">—</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- COMMUNITY IMPACT -->
 <section id="impact" class="impact">
   <div class="container">
@@ -476,11 +465,11 @@ function parseProductCoordinate(value){
 
 function renderProductCard(row){
   const name = cleanProductValue(row["Nama Usaha"]) || cleanProductValue(row["Produk"]) || "Usaha Binaan";
-  const jenis = cleanProductValue(row["Jenis Produk"]) || "-";
-  const gampong = cleanProductValue(row["Gampong"]) || "-";
-  const owner = cleanProductValue(row["Nama Pemilik"]) || "-";
-  const stok = cleanProductValue(row["Stok"]) || "-";
-  const ket = cleanProductValue(row["Keterangan"]) || "-";
+  const jenis = cleanProductValue(row["Jenis Produk"]) || "";
+  const gampong = cleanProductValue(row["Gampong"]) || "";
+  const owner = cleanProductValue(row["Nama Pemilik"]) || "";
+  const stok = cleanProductValue(row["Stok"]) || "";
+  const ket = cleanProductValue(row["Keterangan"]) || "";
   const status = cleanProductValue(row["Status"]) || "-";
   const wa = cleanProductValue(row["WhatsApp"]);
   const img = productImageUrl(row);
@@ -519,23 +508,37 @@ function renderProductCard(row){
 
   const title = document.createElement("h3");
   title.textContent = name;
-
-  const makeMeta = (label, value) => {
-    const p = document.createElement("div");
-    p.className = "product-meta";
-    const b = document.createElement("b");
-    b.textContent = label + ": ";
-    p.appendChild(b);
-    p.appendChild(document.createTextNode(value));
-    return p;
-  };
-
   body.appendChild(title);
-  body.appendChild(makeMeta("Jenis Produk", jenis));
-  body.appendChild(makeMeta("Gampong", gampong));
-  body.appendChild(makeMeta("Nama Pemilik", owner));
-  body.appendChild(makeMeta("Stok", stok));
-  body.appendChild(makeMeta("Keterangan", ket));
+
+  // Jenis Produk • Gampong
+  const subline = document.createElement("div");
+  subline.className = "product-subline";
+  const subParts = [];
+  if(jenis) subParts.push(jenis);
+  if(gampong) subParts.push(gampong);
+  subline.textContent = subParts.length ? subParts.join(" • ") : "";
+  if(subline.textContent) body.appendChild(subline);
+
+  // Nama pemilik — tanpa label agar lebih clean
+  if(owner){
+    const ownerEl = document.createElement("div");
+    ownerEl.className = "product-owner";
+    ownerEl.textContent = owner;
+    body.appendChild(ownerEl);
+  }
+
+  // Stok — hanya tampil jika ada data
+  if(stok){
+    const stockEl = document.createElement("div");
+    stockEl.className = "product-stock";
+    stockEl.innerHTML = `Stok tersedia: <strong>${escapeHtml(stok)}</strong>`;
+    body.appendChild(stockEl);
+  }
+
+  // Keterangan hanya muncul jika memang ada isi
+  if(ket){
+    body.appendChild(makeMeta("Keterangan", ket));
+  }
 
   const waLink = document.createElement("a");
   waLink.className = "product-wa" + (wa ? "" : " disabled");
@@ -545,18 +548,19 @@ function renderProductCard(row){
     waLink.target = "_blank";
     waLink.rel = "noopener";
   }
+  body.appendChild(waLink);
 
   const locationBox = document.createElement("div");
   locationBox.className = "product-location";
 
   const locationLabel = document.createElement("b");
-  locationLabel.textContent = "Lokasi: ";
+  locationLabel.textContent = "📍 ";
   locationBox.appendChild(locationLabel);
 
   locationBox.appendChild(
     document.createTextNode(coordinate
       ? `${coordinate.lat.toFixed(6)}, ${coordinate.lng.toFixed(6)}`
-      : (lokasi || "-"))
+      : (lokasi || "Lokasi belum tersedia"))
   );
 
   if(coordinate){
@@ -580,12 +584,11 @@ function renderProductCard(row){
     locationBox.appendChild(actions);
   }
 
+  body.appendChild(locationBox);
+
   const statusBadge = document.createElement("span");
   statusBadge.className = "product-status";
-  statusBadge.textContent = "Status: " + status;
-
-  body.appendChild(waLink);
-  body.appendChild(locationBox);
+  statusBadge.textContent = "● " + status;
   body.appendChild(statusBadge);
 
   card.appendChild(photo);
