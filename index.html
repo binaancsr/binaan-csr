@@ -276,6 +276,9 @@ footer strong{font-size:14px}
         <select id="filterActivity">
           <option value="">Semua Activity</option>
         </select>
+        <select id="filterSummary">
+          <option value="">Semua Summary Monev</option>
+        </select>
       </div>
       <div class="kpis">
         <div class="kpi"><small>Total Program</small><b>—</b></div>
@@ -438,8 +441,9 @@ function buildSustainabilityFilters(data) {
   const yearSelect = document.getElementById("filterTahun");
   const recipientSelect = document.getElementById("filterPenerima");
   const activitySelect = document.getElementById("filterActivity");
+  const summarySelect = document.getElementById("filterSummary");
 
-  if (!yearSelect || !recipientSelect || !activitySelect) return;
+  if (!yearSelect || !recipientSelect || !activitySelect || !summarySelect) return;
 
   const years = uniqueSorted(
     data.map(row => cleanValue(row["Tahun Budget"]))
@@ -456,6 +460,13 @@ function buildSustainabilityFilters(data) {
   const activities = uniqueSorted(
     data.map(row => row["Activity"])
   );
+
+  const summaryOptions = [
+    "Masih Berjalan",
+    "Mati",
+    "Tidak Berkembang / Kurang Baik",
+    "Belum Monitoring"
+  ];
 
   yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
   years.forEach(year => {
@@ -480,14 +491,23 @@ function buildSustainabilityFilters(data) {
     option.textContent = activity;
     activitySelect.appendChild(option);
   });
+
+  summarySelect.innerHTML = '<option value="">Semua Summary Monev</option>';
+  summaryOptions.forEach(summary => {
+    const option = document.createElement("option");
+    option.value = summary;
+    option.textContent = summary;
+    summarySelect.appendChild(option);
+  });
 }
 
 function setupSustainabilityFilters() {
   const yearSelect = document.getElementById("filterTahun");
   const recipientSelect = document.getElementById("filterPenerima");
   const activitySelect = document.getElementById("filterActivity");
+  const summarySelect = document.getElementById("filterSummary");
 
-  if (!yearSelect || !recipientSelect || !activitySelect) return;
+  if (!yearSelect || !recipientSelect || !activitySelect || !summarySelect) return;
 
   // Hindari memasang listener lebih dari sekali.
   if (yearSelect.dataset.ready === "1") return;
@@ -496,15 +516,21 @@ function setupSustainabilityFilters() {
     const selectedYear = cleanValue(yearSelect.value);
     const selectedRecipient = cleanValue(recipientSelect.value);
     const selectedActivity = cleanValue(activitySelect.value);
+    const selectedSummary = cleanValue(summarySelect.value);
 
     const filteredData = sustainabilityData.filter(row => {
       const year = cleanValue(row["Tahun Budget"]);
       const recipient = cleanValue(row["Penerima Manfaat"]);
       const activity = cleanValue(row["Activity"]);
+      const summary = normalizeSummary(row["Summary Monev"]);
+      const summaryLabel = summary === "Tidak Berkembang"
+        ? "Tidak Berkembang / Kurang Baik"
+        : summary;
 
       if (selectedYear && year !== selectedYear) return false;
       if (selectedRecipient && recipient !== selectedRecipient) return false;
       if (selectedActivity && activity !== selectedActivity) return false;
+      if (selectedSummary && summaryLabel !== selectedSummary) return false;
 
       return true;
     });
@@ -515,6 +541,7 @@ function setupSustainabilityFilters() {
   yearSelect.addEventListener("change", applyFilters);
   recipientSelect.addEventListener("change", applyFilters);
   activitySelect.addEventListener("change", applyFilters);
+  summarySelect.addEventListener("change", applyFilters);
 
   yearSelect.dataset.ready = "1";
 }
