@@ -94,42 +94,6 @@ section{padding:65px 0}
 .map-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .map{height:520px;border:0;background:#e3ebe6;position:relative}
 #locationMap{height:100%;width:100%}
-.location-legend{
-  position:absolute;
-  left:12px;
-  bottom:12px;
-  z-index:1000;
-  background:rgba(255,255,255,.96);
-  border:1px solid rgba(11,59,43,.12);
-  border-radius:10px;
-  padding:9px 11px;
-  box-shadow:0 2px 10px rgba(0,0,0,.12);
-  font-size:10px;
-  line-height:1.5;
-  color:#496057;
-  pointer-events:none;
-}
-.location-legend-title{
-  font-weight:800;
-  color:#0b3b2b;
-  margin-bottom:5px;
-}
-.location-legend-row{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin:2px 0;
-  white-space:nowrap;
-}
-.location-legend-dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  display:inline-block;
-  flex:none;
-  border:1px solid rgba(255,255,255,.9);
-  box-shadow:0 0 0 1px rgba(0,0,0,.08);
-}
 .map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);flex-wrap:wrap}
 .map-toolbar strong{color:var(--text)}
 .map-btn{display:inline-block;padding:7px 10px;border-radius:8px;background:var(--soft);color:var(--green);font-size:10px;font-weight:800}
@@ -284,16 +248,7 @@ footer strong{font-size:14px}
 
     <div class="locations">
       <div class="map-card">
-        <div class="map">
-          <div id="locationMap"></div>
-          <div class="location-legend">
-            <div class="location-legend-title">Status Monitoring</div>
-            <div class="location-legend-row"><span class="location-legend-dot" style="background:#16834b"></span>Masih Berjalan</div>
-            <div class="location-legend-row"><span class="location-legend-dot" style="background:#c84f4f"></span>Mati</div>
-            <div class="location-legend-row"><span class="location-legend-dot" style="background:#e3a33b"></span>Tidak Berkembang/Kurang Baik</div>
-            <div class="location-legend-row"><span class="location-legend-dot" style="background:#8b9590"></span>Belum Monitoring</div>
-          </div>
-        </div>
+        <div class="map"><div id="locationMap"></div></div>
         <div class="map-toolbar">
           <div><strong>Peta Lokasi Program</strong> • Klik titik untuk melihat informasi program.</div>
           <div style="display:flex;gap:7px;flex-wrap:wrap">
@@ -532,7 +487,7 @@ footer strong{font-size:14px}
 
 <!-- COMMUNITY IMPACT API -->
 <script>
-const COMMUNITY_API_URL = "https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec";
+const COMMUNITY_API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec?sheet=penerima_manfaat";
 let communityImpactData = [];
 
 function cleanImpactValue(value){
@@ -541,8 +496,8 @@ function cleanImpactValue(value){
 
 function normalizeImpactCategory(value){
   const s = cleanImpactValue(value).toLowerCase();
-  if (s === "kelompok") return "Kelompok";
-  if (s === "individu") return "Individu";
+  if (s.includes("kelompok")) return "Kelompok";
+  if (s.includes("individu")) return "Individu";
   return "";
 }
 
@@ -648,7 +603,7 @@ function updateCommunityImpact(data){
       <td>${escapeHtml(cleanImpactValue(row["Jenis Kelamin"]) || "-")}</td>
       <td>${escapeHtml(cleanImpactValue(row["Nama Program"]) || "-")}</td>
       <td>${escapeHtml(cleanImpactValue(row["Tahun Program"]) || "-")}</td>
-      <td>${escapeHtml(cleanImpactValue(row["Jenis Bantuan"]) || "-")}</td>
+      <td>${escapeHtml(cleanImpactValue(row["Jenis Bantuan/Ternak/Budidaya/Produk"]) || "-")}</td>
     `;
     body.appendChild(tr);
   });
@@ -657,7 +612,7 @@ function updateCommunityImpact(data){
 
 <!-- SUSTAINABILITY API -->
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
 
 let sustainabilityData = [];
 
@@ -823,25 +778,7 @@ function updateLocationSection(data) {
     const year = cleanValue(row["Tahun Budget"]);
     const summary = cleanValue(row["Summary Monev"]);
 
-    const normalizedStatus = normalizeSummary(summary);
-
-    const statusColors = {
-      "Masih Berjalan": "#16834b",
-      "Mati": "#c84f4f",
-      "Tidak Berkembang": "#e3a33b",
-      "Belum Monitoring": "#8b9590"
-    };
-
-    const markerColor = statusColors[normalizedStatus] || "#8b9590";
-
-    const marker = L.circleMarker([coordinate.lat, coordinate.lng], {
-      radius: 7,
-      color: "#ffffff",
-      weight: 2,
-      opacity: 1,
-      fillColor: markerColor,
-      fillOpacity: 0.95
-    });
+    const marker = L.marker([coordinate.lat, coordinate.lng]);
 
     const popup = `
       <div class="location-popup">
@@ -849,7 +786,7 @@ function updateLocationSection(data) {
         <h4>${escapeHtml(description)}</h4>
         <div class="meta"><b>Tahun Program:</b> ${escapeHtml(year || "-")}</div>
         <div class="meta"><b>Lokasi:</b> ${escapeHtml(recipient || "-")}</div>
-        <div class="meta"><b>Summary Monev:</b> ${escapeHtml(normalizedStatus === "Tidak Berkembang" ? "Tidak Berkembang/Kurang Baik" : normalizedStatus)}</div>
+        <div class="meta"><b>Summary Monev:</b> ${escapeHtml(summary || "-")}</div>
         <div class="meta"><b>Koordinat:</b> ${coordinate.lat.toFixed(6)}, ${coordinate.lng.toFixed(6)}</div>
         <div class="popup-actions">
           <a href="${googleMapsUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Maps</a>
@@ -859,8 +796,6 @@ function updateLocationSection(data) {
     `;
 
     marker.bindPopup(popup, { maxWidth: 320 });
-    marker.on("mouseover", () => marker.setStyle({ radius: 10, weight: 3 }));
-    marker.on("mouseout", () => marker.setStyle({ radius: 8, weight: 2 }));
     marker.bindTooltip(description, { direction: "top", offset: [0, -8] });
     marker.addTo(locationLayer);
     bounds.push([coordinate.lat, coordinate.lng]);
