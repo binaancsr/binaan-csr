@@ -122,7 +122,7 @@ footer strong{font-size:14px}
 .program-table td{padding:10px 12px;border-bottom:1px solid #edf1ef;vertical-align:top;line-height:1.4}
 .program-table tbody tr:hover{background:#f8fbf9}
 .program-table .empty{padding:22px;text-align:center;color:var(--muted)}
-</style>
+.legend{display:grid;gap:10px}.legend>div{display:flex;align-items:center;gap:7px}.legend-value{margin-left:3px;font-weight:600}.legend-label{white-space:nowrap}</style>
 </head>
 
 <body>
@@ -319,9 +319,11 @@ footer strong{font-size:14px}
           <div class="chartbox">
             <h3>Activity × Summary Monev</h3>
             <p>Perbandingan aktivitas dengan kondisi hasil monitoring.</p>
-            <div class="donutwrap"><div class="donut"></div><div class="legend">
-              <div><span class="dot"></span>Masih Berjalan</div>
-              <div>● Mati</div><div>● Tidak Berkembang</div><div>● Belum Monitoring</div>
+            <div class="donutwrap"><div class="donut"></div><div class="legend" id="summaryDonutLegend">
+              <div><span class="dot"></span><span class="legend-label">Masih Berjalan</span><b class="legend-value">0</b></div>
+              <div><span class="dot"></span><span class="legend-label">Mati</span><b class="legend-value">0</b></div>
+              <div><span class="dot"></span><span class="legend-label">Tidak Berkembang</span><b class="legend-value">0</b></div>
+              <div><span class="dot"></span><span class="legend-label">Belum Monitoring</span><b class="legend-value">0</b></div>
             </div></div>
           </div>
         </div>
@@ -806,14 +808,13 @@ function updateSustainabilityDashboard(data) {
       }
     `;
 
-    const legend = donut.parentElement?.querySelector(".legend");
+    const legend = section.querySelector("#summaryDonutLegend");
     if (legend) {
-      const items = legend.querySelectorAll("div");
+      const items = legend.querySelectorAll(".legend-value");
       const values = [running, mati, tidakBerkembang, belumMonitoring];
       items.forEach((item, index) => {
         if (index < values.length) {
-          const label = item.textContent.replace(/\\s+[0-9,.]+$/, "").trim();
-          item.textContent = `${label} ${values[index].toLocaleString("id-ID")}`;
+          item.textContent = values[index].toLocaleString("id-ID");
         }
       });
     }
