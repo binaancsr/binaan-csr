@@ -673,6 +673,7 @@ async function loadProductData(){
 <!-- COMMUNITY IMPACT API: Web_community_impact -->
 <script>
 const COMMUNITY_API_URL = "https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec";
+const COMMUNITY_FALLBACK_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec?sheet=penerima_manfaat";
 let communityImpactData = [];
 
 function cleanImpactValue(value){ return String(value ?? "").trim(); }
@@ -692,20 +693,40 @@ function normalizeGender(value){
   return "";
 }
 
-async function loadCommunityImpactData(){
+async function fetchCommunityJson(url, timeoutMs=12000){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
   try{
-    const response = await fetch(COMMUNITY_API_URL);
-    if(!response.ok) throw new Error("Gagal mengambil data Community Impact");
+    const response = await fetch(url,{signal:controller.signal,cache:"no-store"});
+    if(!response.ok) throw new Error("HTTP " + response.status);
     const payload = await response.json();
     const data = Array.isArray(payload) ? payload : payload.data;
     if(!Array.isArray(data)) throw new Error("Format data Community Impact tidak sesuai");
+    return data;
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+async function loadCommunityImpactData(){
+  try{
+    let data;
+    try{
+      // Utama: Web_community_impact
+      data = await fetchCommunityJson(COMMUNITY_API_URL);
+    }catch(primaryError){
+      console.warn("Web_community_impact gagal, mencoba endpoint penerima_manfaat cadangan.", primaryError);
+      // Cadangan: endpoint sheet penerima_manfaat dari Web_Sustain
+      data = await fetchCommunityJson(COMMUNITY_FALLBACK_URL);
+    }
+
     communityImpactData = data;
     buildCommunityImpactFilters(data);
     updateCommunityImpact(data);
   }catch(error){
     console.error("Community Impact API Error:", error);
     const note = document.getElementById("impactCountNote");
-    if(note) note.textContent = "Data Community Impact belum dapat dimuat. Pastikan Web_community_impact aktif.";
+    if(note) note.textContent = "Data Community Impact belum dapat dimuat. Periksa deployment Web_community_impact / sheet penerima_manfaat.";
   }
 }
 
