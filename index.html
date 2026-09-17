@@ -15,7 +15,7 @@
 html{scroll-behavior:smooth}
 body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:var(--bg)}
 a{text-decoration:none;color:inherit}
-button,select{font:inherit}
+button,select,input{font:inherit}
 .container{width:min(1180px,90%);margin:auto}
 
 /* NAV */
@@ -51,6 +51,27 @@ section{padding:65px 0}
 .card h3{font-size:15px;margin:7px 0 5px}.card p{font-size:11px;line-height:1.6;color:var(--muted);margin:0}
 .photo{height:170px;background:linear-gradient(135deg,#dfe9e3,#f5f8f6);display:grid;place-items:center;color:#7b8c84;font-size:10px}
 .photo.tall{height:190px}
+
+/* PRODUCT */
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:22px}
+.product-card{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.product-photo{height:205px;background:linear-gradient(135deg,#dfe9e3,#f5f8f6);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.product-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.product-photo .photo-placeholder{font-size:10px;color:#7b8c84}
+.product-body{padding:16px;display:flex;flex-direction:column;gap:7px;flex:1}
+.product-body h3{font-size:17px;margin:0;color:var(--dark);line-height:1.3}
+.product-meta{font-size:11px;color:var(--muted);line-height:1.55}
+.product-meta b{color:var(--text);font-weight:700}
+.product-status{display:inline-flex;align-self:flex-start;padding:5px 9px;border-radius:99px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800}
+.product-wa{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:auto;padding:10px 12px;border-radius:9px;background:var(--green);color:#fff;font-size:11px;font-weight:800}
+.product-wa:hover{background:var(--green2)}
+.product-wa.disabled{background:#e7ece9;color:#87928c;pointer-events:none}
+.product-location{font-size:11px;color:var(--muted);line-height:1.5}
+.product-location b{color:var(--text);font-weight:700}
+.product-location-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.product-location-actions a{padding:6px 8px;border-radius:7px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800}
+.product-note{margin-top:12px;font-size:10px;color:var(--muted)}
+.product-empty{grid-column:1/-1;padding:30px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:12px}
 
 /* PROGRAM */
 .program-card{padding:20px;min-height:145px}
@@ -94,28 +115,6 @@ section{padding:65px 0}
 .map-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .map{height:520px;border:0;background:#e3ebe6;position:relative}
 #locationMap{height:100%;width:100%}
-
-/* PIN LOKASI PROGRAM - warna berdasarkan Summary Monev */
-.location-pin{
-  width:22px;
-  height:22px;
-  border-radius:50% 50% 50% 0;
-  transform:rotate(-45deg);
-  border:2px solid #fff;
-  box-shadow:0 2px 7px rgba(0,0,0,.28);
-  position:relative;
-}
-.location-pin::after{
-  content:"";
-  position:absolute;
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#fff;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-}
 .map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);flex-wrap:wrap}
 .map-toolbar strong{color:var(--text)}
 .map-btn{display:inline-block;padding:7px 10px;border-radius:8px;background:var(--soft);color:var(--green);font-size:10px;font-weight:800}
@@ -125,8 +124,6 @@ section{padding:65px 0}
 .location-stat span{font-size:9px;color:var(--muted)}
 .village-list{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
 .village-list h3{margin:0 0 5px;font-size:15px}
-.village{padding:13px 0;border-bottom:1px solid var(--line);font-size:12px;display:flex;justify-content:space-between;gap:15px}
-.village:last-child{border:0}.village span{color:var(--muted)}
 .location-note{margin-top:14px;padding:12px;border-radius:10px;background:#fff7e6;border:1px solid #f0dfb6;color:#765d20;font-size:10px;line-height:1.6}
 .location-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;height:8cm;max-height:8cm;position:relative}
 .location-table{width:100%;min-width:620px;border-collapse:collapse;font-size:11px}
@@ -139,36 +136,25 @@ section{padding:65px 0}
 .location-popup .meta{margin:3px 0}.location-popup .meta b{color:#496057}
 .location-popup .popup-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
 .location-popup .popup-actions a{padding:6px 8px;border-radius:7px;background:#eef6f1;color:#087443;font-weight:800;font-size:9px}
+.status-pin{width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.status-pin::after{content:"";width:4px;height:4px;background:#fff;border-radius:50%;position:absolute;left:3px;top:3px}
+.status-running{background:#087443}.status-dead{background:#c83f3f}.status-poor{background:#e3a84b}.status-unmonitored{background:#cfd5d2}
+.map-legend{position:absolute;left:12px;bottom:52px;z-index:1000;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:10px;padding:9px 11px;box-shadow:0 2px 10px rgba(0,0,0,.08);font-size:9px;line-height:1.8}
+.map-legend-row{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.map-legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.12)}
+.legend-running{background:#087443}.legend-dead{background:#c83f3f}.legend-poor{background:#e3a84b}.legend-unmonitored{background:#cfd5d2}
 @media(max-width:700px){.locations{grid-template-columns:1fr}.map{height:400px}.location-stats{grid-template-columns:1fr 1fr}}
 
-/* IMPACT */
+/* PAGU / TABLE */
 .impact{background:#edf5f1}.impact-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:22px}
 .impact-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px}.impact-card b{display:block;color:var(--green);font-size:24px}.impact-card span{font-size:10px;color:var(--muted)}
-
-/* TABLE */
 .table-wrap{overflow:auto;margin-top:18px;border:1px solid var(--line);border-radius:12px}
 table{width:100%;border-collapse:collapse;min-width:700px;background:#fff;font-size:11px}
 th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
 th{background:#f4f7f5;color:#496057;font-size:10px}.money{text-align:right;font-weight:700}.stock{font-weight:800;color:var(--green)}
 .badge{display:inline-block;padding:5px 8px;border-radius:99px;background:var(--soft);color:var(--green);font-size:9px;font-weight:800}
 
-/* FOOTER */
-footer{background:#0a3223;color:#dce9e2;padding:32px 5%;display:flex;justify-content:space-between;gap:20px;font-size:11px}
-footer strong{font-size:14px}
-
-/* RESPONSIVE */
-@media(max-width:1100px){
-  .menu{display:none}.cards4{grid-template-columns:repeat(2,1fr)}
-  .kpis{grid-template-columns:repeat(3,1fr)}.impact-grid{grid-template-columns:repeat(3,1fr)}
-}
-@media(max-width:700px){
-  section{padding:50px 0}.hero{padding:70px 0 78px}
-  .hero h1{font-size:43px}.cards4,.charts,.locations,.sustain-layout{grid-template-columns:1fr}.sustain-left{grid-column:1;grid-row:auto}.sustain-right{grid-column:1}
-  .kpis{grid-template-columns:repeat(2,1fr)}.impact-grid{grid-template-columns:repeat(2,1fr)}
-  .donutwrap{display:block}.donut{margin:auto}.legend{margin-top:15px}
-  footer{display:block}footer div+div{margin-top:12px}
-}
-
+/* PROGRAM TABLE */
 .program-table-wrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
 .program-table-head{padding:18px 18px 12px}
 .program-table-head h3{font-size:14px;margin:0 0 6px}
@@ -180,7 +166,27 @@ footer strong{font-size:14px}
 .program-table td{padding:10px 12px;border-bottom:1px solid #edf1ef;vertical-align:top;line-height:1.4}
 .program-table tbody tr:hover{background:#f8fbf9}
 .program-table .empty{padding:22px;text-align:center;color:var(--muted)}
-.legend{display:grid;gap:10px}.legend>div{display:flex;align-items:center;gap:7px}.legend-value{margin-left:3px;font-weight:600}.legend-label{white-space:nowrap}</style>
+.legend{display:grid;gap:10px}.legend>div{display:flex;align-items:center;gap:7px}.legend-value{margin-left:3px;font-weight:600}.legend-label{white-space:nowrap}
+
+/* FOOTER */
+footer{background:#0a3223;color:#dce9e2;padding:32px 5%;display:flex;justify-content:space-between;gap:20px;font-size:11px}
+footer strong{font-size:14px}
+
+.product-more-wrap{display:flex;justify-content:center;margin-top:22px}.product-more-btn{border:1px solid var(--line);background:#fff;color:var(--green);padding:10px 18px;border-radius:9px;font-size:11px;font-weight:800;cursor:pointer}.product-more-btn:hover{background:var(--soft)}.product-card.product-hidden{display:none}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .menu{display:none}.cards4,.product-grid{grid-template-columns:repeat(2,1fr)}
+  .kpis{grid-template-columns:repeat(3,1fr)}.impact-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:700px){
+  section{padding:50px 0}.hero{padding:70px 0 78px}
+  .hero h1{font-size:43px}.cards4,.product-grid,.charts,.locations,.sustain-layout{grid-template-columns:1fr}.sustain-left{grid-column:1;grid-row:auto}.sustain-right{grid-column:1}
+  .kpis{grid-template-columns:repeat(2,1fr)}.impact-grid{grid-template-columns:repeat(2,1fr)}
+  .donutwrap{display:block}.donut{margin:auto}.legend{margin-top:15px}
+  footer{display:block}footer div+div{margin-top:12px}
+}
+</style>
 </head>
 
 <body>
@@ -222,55 +228,61 @@ footer strong{font-size:14px}
   </div>
 </section>
 
+<!-- PRODUK UMKM -->
 <section id="produk" class="white">
   <div class="container">
     <div class="section-head">
       <div><h2 class="section-title">Produk UMKM</h2><p class="section-sub">Etalase produk masyarakat binaan.</p></div>
-      <a class="section-link" href="#produk">Lihat semua →</a>
+      
     </div>
-    <div class="grid cards4" style="margin-top:22px">
-      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">KULINER</span><h3>Inabah Bakery</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Produk Tersedia</span></p></div></div>
-      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">PERTANIAN</span><h3>Produk Kelompok Tani</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Produk Tersedia</span></p></div></div>
-      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">JASA</span><h3>Barbershop Binaan</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Tersedia</span></p></div></div>
-      <div class="card"><div class="photo">FOTO PRODUK</div><div class="card-body"><span class="tag">KERAJINAN</span><h3>Sewing Group</h3><p>Gampong • PIC • Kontak/WhatsApp</p><p style="margin-top:8px"><span class="badge">Tersedia</span></p></div></div>
+    <div id="productUmkmGrid" class="product-grid">
+      <div class="product-empty">Memuat data Produk UMKM...</div>
     </div>
+    <div id="productUmkmNote" class="product-note"></div>
   </div>
 </section>
 
+<!-- PETERNAKAN / PERIKANAN / PERTANIAN -->
 <section id="komoditas">
   <div class="container">
     <div class="section-head">
       <div><h2 class="section-title">Peternakan / Perikanan / Pertanian</h2><p class="section-sub">Program dan usaha berbasis komoditas masyarakat binaan.</p></div>
+      
     </div>
-    <div class="grid cards4" style="margin-top:22px">
-      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">PETERNAKAN</span><h3>Program Peternakan</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
-      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">PERIKANAN</span><h3>Program Perikanan</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
-      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">PERTANIAN</span><h3>Program Pertanian</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
-      <div class="card"><div class="photo">FOTO PROGRAM</div><div class="card-body"><span class="tag">KOMODITAS</span><h3>Pengembangan Usaha</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+    <div id="productKomoditasGrid" class="product-grid">
+      <div class="product-empty">Memuat data Peternakan / Perikanan / Pertanian...</div>
     </div>
+    <div id="productKomoditasNote" class="product-note"></div>
   </div>
 </section>
 
+<!-- UMKM JASA -->
 <section id="jasa" class="white">
   <div class="container">
     <h2 class="section-title">UMKM Jasa</h2>
     <p class="section-sub">Usaha jasa masyarakat binaan.</p>
-    <div class="grid cards4" style="margin-top:22px">
-      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>Usaha Jasa Binaan</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
-      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>AC Service</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
-      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>Barbershop</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
-      <div class="card"><div class="photo">FOTO USAHA</div><div class="card-body"><span class="tag">JASA</span><h3>Usaha Lainnya</h3><p>Gampong • PIC • Kontak/WhatsApp</p></div></div>
+    <div id="productJasaGrid" class="product-grid">
+      <div class="product-empty">Memuat data UMKM Jasa...</div>
     </div>
+    <div id="productJasaNote" class="product-note"></div>
   </div>
 </section>
 
+<!-- LOKASI: dipertahankan -->
 <section id="lokasi">
   <div class="container">
     <h2 class="section-title">Lokasi</h2>
-
     <div class="locations">
       <div class="map-card">
-        <div class="map"><div id="locationMap"></div></div>
+        <div class="map">
+          <div id="locationMap"></div>
+          <div class="map-legend">
+            <div class="map-legend-row"><span class="map-legend-dot legend-running"></span> Masih Berjalan</div>
+            <div class="map-legend-row"><span class="map-legend-dot legend-dead"></span> Mati</div>
+            <div class="map-legend-row"><span class="map-legend-dot legend-poor"></span> Tidak Berkembang/Kurang Baik</div>
+            <div class="map-legend-row"><span class="map-legend-dot legend-unmonitored"></span> Belum Monitoring</div>
+          </div>
+        </div>
         <div class="map-toolbar">
           <div><strong>Peta Lokasi Program</strong> • Klik titik untuk melihat informasi program.</div>
           <div style="display:flex;gap:7px;flex-wrap:wrap">
@@ -279,10 +291,8 @@ footer strong{font-size:14px}
           </div>
         </div>
       </div>
-
       <div class="village-list">
         <h3>Ringkasan Lokasi</h3>
-
         <div class="location-stats">
           <div class="location-stat">
             <b id="locationWithCoord">0</b>
@@ -293,21 +303,12 @@ footer strong{font-size:14px}
             <span>Deskripsi belum memiliki koordinat</span>
           </div>
         </div>
-
         <div class="location-note" id="locationNote">Menyiapkan data lokasi...</div>
-
       </div>
     </div>
-
     <div class="location-table-wrap">
       <table class="location-table">
-        <thead>
-          <tr>
-            <th>Penerima Manfaat / Lokasi</th>
-            <th>Ada Lokasi</th>
-            <th>Belum Ada Koordinat</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Penerima Manfaat / Lokasi</th><th>Ada Lokasi</th><th>Belum Ada Koordinat</th></tr></thead>
         <tbody id="locationSummaryBody">
           <tr><td colspan="3" style="text-align:center;color:var(--muted)">Menyiapkan data...</td></tr>
         </tbody>
@@ -316,6 +317,7 @@ footer strong{font-size:14px}
   </div>
 </section>
 
+<!-- PAGU -->
 <section id="pagu" class="white">
   <div class="container">
     <h2 class="section-title">Pagu Gampong</h2>
@@ -339,11 +341,11 @@ footer strong{font-size:14px}
   </div>
 </section>
 
+<!-- COMMUNITY IMPACT -->
 <section id="impact" class="impact">
   <div class="container">
     <h2 class="section-title">Community Impact</h2>
     <p class="section-sub">Jumlah penerima manfaat berdasarkan data penerima manfaat.</p>
-
     <div class="impact-grid">
       <div class="impact-card"><b id="impactKelompok">—</b><span>Penerima Manfaat Kelompok</span></div>
       <div class="impact-card"><b id="impactIndividu">—</b><span>Penerima Manfaat Individu</span></div>
@@ -351,30 +353,19 @@ footer strong{font-size:14px}
       <div class="impact-card"><b id="impactPerempuan">—</b><span>Penerima Manfaat Perempuan</span></div>
       <div class="impact-card"><b id="impactOther">—</b><span>Instansi / Other</span></div>
     </div>
-
     <div class="impact-tools">
       <input id="impactSearchName" list="impactNameList" type="search" placeholder="Cari Nama Penerima / Kelompok..." autocomplete="off">
       <datalist id="impactNameList"></datalist>
-      <select id="impactFilterLocation">
-        <option value="">Semua Gampong</option>
-      </select>
+      <select id="impactFilterLocation"><option value="">Semua Gampong</option></select>
     </div>
-
     <div class="impact-count-note" id="impactCountNote">Menyiapkan data...</div>
-
     <div class="impact-table-wrap">
       <div class="impact-table-scroll">
         <table class="impact-table">
-          <thead>
-            <tr>
-              <th>Nama Penerima/Kelompok</th>
-              <th>Gampong</th>
-              <th>Jenis Kelamin</th>
-              <th>Nama Program</th>
-              <th>Tahun Program</th>
-              <th>Jenis Bantuan</th>
-            </tr>
-          </thead>
+          <thead><tr>
+            <th>Nama Penerima/Kelompok</th><th>Gampong</th><th>Jenis Kelamin</th>
+            <th>Nama Program</th><th>Tahun Program</th><th>Jenis Bantuan</th>
+          </tr></thead>
           <tbody id="impactTableBody">
             <tr><td colspan="6" style="text-align:center;color:var(--muted)">Memuat data penerima manfaat...</td></tr>
           </tbody>
@@ -384,24 +375,17 @@ footer strong{font-size:14px}
   </div>
 </section>
 
+<!-- SUSTAINABILITY: dipertahankan -->
 <section id="sustainability" class="white">
   <div class="container">
     <h2 class="section-title">Sustainability Program</h2>
     <p class="section-sub">Monitoring berdasarkan jumlah program, kondisi, aktivitas, lokasi, dan hasil monitoring.</p>
     <div class="dashboard">
       <div class="filters sustainability-filters">
-        <select id="filterTahun">
-          <option value="">Semua Tahun</option>
-        </select>
-        <select id="filterPenerima">
-          <option value="">Semua Penerima Manfaat</option>
-        </select>
-        <select id="filterActivity">
-          <option value="">Semua Activity</option>
-        </select>
-        <select id="filterSummary">
-          <option value="">Semua Summary Monev</option>
-        </select>
+        <select id="filterTahun"><option value="">Semua Tahun</option></select>
+        <select id="filterPenerima"><option value="">Semua Penerima Manfaat</option></select>
+        <select id="filterActivity"><option value="">Semua Activity</option></select>
+        <select id="filterSummary"><option value="">Semua Summary Monev</option></select>
       </div>
       <div class="kpis">
         <div class="kpi"><small>Total Program</small><b>—</b></div>
@@ -421,30 +405,24 @@ footer strong{font-size:14px}
             <div class="barrow"><span>Gampong D</span><div class="bar"><i></i></div><b>—</b></div>
           </div>
         </div>
-
         <div class="sustain-right">
           <div class="chartbox">
-            <h3>Summary Monev</h3>
-            <p>Distribusi kondisi program berdasarkan kolom Summary Monev.</p>
+            <h3>Summary Monev</h3><p>Distribusi kondisi program berdasarkan kolom Summary Monev.</p>
             <div class="barrow"><span>Masih Berjalan</span><div class="bar"><i></i></div><b>—</b></div>
             <div class="barrow"><span>Mati</span><div class="bar"><i></i></div><b>—</b></div>
             <div class="barrow"><span>Tidak Berkembang</span><div class="bar"><i></i></div><b>—</b></div>
             <div class="barrow"><span>Belum Monitoring</span><div class="bar"><i></i></div><b>—</b></div>
           </div>
-
           <div class="chartbox">
-            <h3>Activity</h3>
-            <p>Jumlah program berdasarkan Activity.</p>
+            <h3>Activity</h3><p>Jumlah program berdasarkan Activity.</p>
             <div class="barrow"><span>Peternakan</span><div class="bar"><i></i></div><b>—</b></div>
             <div class="barrow"><span>Perikanan</span><div class="bar"><i></i></div><b>—</b></div>
             <div class="barrow"><span>Pertanian</span><div class="bar"><i></i></div><b>—</b></div>
             <div class="barrow"><span>Perkebunan</span><div class="bar"><i></i></div><b>—</b></div>
             <div class="barrow"><span>Ekonomi</span><div class="bar"><i></i></div><b>—</b></div>
           </div>
-
           <div class="chartbox">
-            <h3>Activity × Summary Monev</h3>
-            <p>Perbandingan aktivitas dengan kondisi hasil monitoring.</p>
+            <h3>Activity × Summary Monev</h3><p>Perbandingan aktivitas dengan kondisi hasil monitoring.</p>
             <div class="donutwrap"><div class="donut"></div><div class="legend" id="summaryDonutLegend">
               <div><span class="dot"></span><span class="legend-label">Masih Berjalan</span><b class="legend-value">0</b></div>
               <div><span class="dot"></span><span class="legend-label">Mati</span><b class="legend-value">0</b></div>
@@ -454,7 +432,6 @@ footer strong{font-size:14px}
           </div>
         </div>
       </div>
-
       <div class="program-table-wrap">
         <div class="program-table-head">
           <h3>Daftar Program</h3>
@@ -462,26 +439,15 @@ footer strong{font-size:14px}
         </div>
         <div class="table-scroll">
           <table class="program-table">
-            <thead>
-              <tr>
-                <th>Monitoring Code</th>
-                <th>Deskripsi</th>
-                <th>Activity</th>
-                <th>Sub-Kategori</th>
-                <th>Detail Benefit Recipients</th>
-                <th>Hasil Monev Sustain</th>
-                <th>Status Monitoring (Sustain)</th>
-                <th>Tgl Monev Sustain</th>
-                <th>Summary Monev</th>
-              </tr>
-            </thead>
-            <tbody id="programTableBody">
-              <tr><td class="empty" colspan="9">Memuat data program...</td></tr>
-            </tbody>
+            <thead><tr>
+              <th>Monitoring Code</th><th>Deskripsi</th><th>Activity</th><th>Sub-Kategori</th>
+              <th>Detail Benefit Recipients</th><th>Hasil Monev Sustain</th><th>Status Monitoring (Sustain)</th>
+              <th>Tgl Monev Sustain</th><th>Summary Monev</th>
+            </tr></thead>
+            <tbody id="programTableBody"><tr><td class="empty" colspan="9">Memuat data program...</td></tr></tbody>
           </table>
         </div>
       </div>
-
       <div class="status-note"><b>Sumber data:</b> database monitoring PPM-CSR. Data budget tidak digunakan pada dashboard Sustainability.</div>
     </div>
   </div>
@@ -507,27 +473,243 @@ footer strong{font-size:14px}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<!-- COMMUNITY IMPACT API -->
+<!-- PRODUCT API -->
+<script>
+const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycby9Z4BVbERlJ13p8J_GvbakhuvhAJbxEebTTJC90BoPXnPOkizeKXsEjzuZOJZfX-QT/exec";
+let productData = [];
+
+function cleanProductValue(value){
+  return String(value ?? "").trim();
+}
+
+function productImageUrl(row){
+  return cleanProductValue(row["Foto URL"]) || cleanProductValue(row["Foto"]);
+}
+
+function parseProductCoordinate(value){
+  const text = cleanProductValue(value);
+  if(!text) return null;
+  const match = text.match(/(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)/);
+  if(!match) return null;
+  const lat = Number(match[1]);
+  const lng = Number(match[2]);
+  if(!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if(lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+  return {lat,lng};
+}
+
+function renderProductCard(row){
+  const name = cleanProductValue(row["Nama Usaha"]) || cleanProductValue(row["Produk"]) || "Usaha Binaan";
+  const jenis = cleanProductValue(row["Jenis Produk"]) || "-";
+  const gampong = cleanProductValue(row["Gampong"]) || "-";
+  const owner = cleanProductValue(row["Nama Pemilik"]) || "-";
+  const stok = cleanProductValue(row["Stok"]) || "-";
+  const ket = cleanProductValue(row["Keterangan"]) || "-";
+  const status = cleanProductValue(row["Status"]) || "-";
+  const wa = cleanProductValue(row["WhatsApp"]);
+  const img = productImageUrl(row);
+  const lokasi = cleanProductValue(row["Lokasi"]);
+  const coordinate = parseProductCoordinate(lokasi);
+
+  const card = document.createElement("article");
+  card.className = "product-card";
+
+  const photo = document.createElement("div");
+  photo.className = "product-photo";
+
+  if(img){
+    const image = document.createElement("img");
+    image.src = img;
+    image.alt = name;
+    image.loading = "lazy";
+    image.referrerPolicy = "no-referrer";
+    image.onerror = () => {
+      image.remove();
+      const placeholder = document.createElement("span");
+      placeholder.className = "photo-placeholder";
+      placeholder.textContent = "FOTO BELUM TERSEDIA";
+      photo.appendChild(placeholder);
+    };
+    photo.appendChild(image);
+  }else{
+    const placeholder = document.createElement("span");
+    placeholder.className = "photo-placeholder";
+    placeholder.textContent = "FOTO BELUM TERSEDIA";
+    photo.appendChild(placeholder);
+  }
+
+  const body = document.createElement("div");
+  body.className = "product-body";
+
+  const title = document.createElement("h3");
+  title.textContent = name;
+
+  const makeMeta = (label, value) => {
+    const p = document.createElement("div");
+    p.className = "product-meta";
+    const b = document.createElement("b");
+    b.textContent = label + ": ";
+    p.appendChild(b);
+    p.appendChild(document.createTextNode(value));
+    return p;
+  };
+
+  body.appendChild(title);
+  body.appendChild(makeMeta("Jenis Produk", jenis));
+  body.appendChild(makeMeta("Gampong", gampong));
+  body.appendChild(makeMeta("Nama Pemilik", owner));
+  body.appendChild(makeMeta("Stok", stok));
+  body.appendChild(makeMeta("Keterangan", ket));
+
+  const waLink = document.createElement("a");
+  waLink.className = "product-wa" + (wa ? "" : " disabled");
+  waLink.textContent = "💬 Hubungi via WhatsApp";
+  if(wa){
+    waLink.href = wa;
+    waLink.target = "_blank";
+    waLink.rel = "noopener";
+  }
+
+  const locationBox = document.createElement("div");
+  locationBox.className = "product-location";
+
+  const locationLabel = document.createElement("b");
+  locationLabel.textContent = "Lokasi: ";
+  locationBox.appendChild(locationLabel);
+
+  locationBox.appendChild(
+    document.createTextNode(coordinate
+      ? `${coordinate.lat.toFixed(6)}, ${coordinate.lng.toFixed(6)}`
+      : (lokasi || "-"))
+  );
+
+  if(coordinate){
+    const actions = document.createElement("div");
+    actions.className = "product-location-actions";
+
+    const maps = document.createElement("a");
+    maps.href = `https://www.google.com/maps?q=${coordinate.lat},${coordinate.lng}`;
+    maps.target = "_blank";
+    maps.rel = "noopener";
+    maps.textContent = "📍 Google Maps";
+
+    const earth = document.createElement("a");
+    earth.href = `https://earth.google.com/web/@${coordinate.lat},${coordinate.lng},1000a,35y,0h,0t,0r`;
+    earth.target = "_blank";
+    earth.rel = "noopener";
+    earth.textContent = "🌍 Google Earth";
+
+    actions.appendChild(maps);
+    actions.appendChild(earth);
+    locationBox.appendChild(actions);
+  }
+
+  const statusBadge = document.createElement("span");
+  statusBadge.className = "product-status";
+  statusBadge.textContent = "Status: " + status;
+
+  body.appendChild(waLink);
+  body.appendChild(locationBox);
+  body.appendChild(statusBadge);
+
+  card.appendChild(photo);
+  card.appendChild(body);
+  return card;
+}
+
+function renderProductCategory(category, gridId, noteId){
+  const grid = document.getElementById(gridId);
+  const note = document.getElementById(noteId);
+  if(!grid) return;
+
+  const rows = productData.filter(row =>
+    cleanProductValue(row["Tampil Web"]).toLowerCase() === category.toLowerCase()
+  );
+
+  grid.innerHTML = "";
+
+  if(rows.length === 0){
+    const empty = document.createElement("div");
+    empty.className = "product-empty";
+    empty.textContent = "Belum ada data untuk kategori ini.";
+    grid.appendChild(empty);
+  }else{
+    rows.forEach((row, index) => {
+      const card = renderProductCard(row);
+      if(index >= 4) card.classList.add("product-hidden");
+      grid.appendChild(card);
+    });
+
+    if(rows.length > 4){
+      const wrap = document.createElement("div");
+      wrap.className = "product-more-wrap";
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "product-more-btn";
+      button.textContent = `Lihat Semua (${rows.length})`;
+
+      let expanded = false;
+      button.addEventListener("click", () => {
+        expanded = !expanded;
+        grid.querySelectorAll(".product-card").forEach((card, index) => {
+          if(index >= 4) card.classList.toggle("product-hidden", !expanded);
+        });
+        button.textContent = expanded ? "Tampilkan Lebih Sedikit" : `Lihat Semua (${rows.length})`;
+      });
+
+      wrap.appendChild(button);
+      grid.parentElement.appendChild(wrap);
+    }
+  }
+
+  if(note){
+    note.textContent = "Menampilkan " + rows.length.toLocaleString("id-ID") + " data.";
+  }
+}
+
+async function loadProductData(){
+  try{
+    const response = await fetch(PRODUCT_API_URL);
+    if(!response.ok) throw new Error("Gagal mengambil data Produk");
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : payload.data;
+    if(!Array.isArray(data)) throw new Error("Format data Produk tidak sesuai");
+
+    productData = data;
+
+    renderProductCategory("Produk UMKM","productUmkmGrid","productUmkmNote");
+    renderProductCategory("Produk Jasa","productJasaGrid","productJasaNote");
+    renderProductCategory("Peternakan / Perikanan / Pertanian","productKomoditasGrid","productKomoditasNote");
+  }catch(error){
+    console.error("Product API Error:", error);
+    ["productUmkmGrid","productJasaGrid","productKomoditasGrid"].forEach(id=>{
+      const grid = document.getElementById(id);
+      if(grid) grid.innerHTML = '<div class="product-empty">Data belum dapat dimuat. Silakan periksa API web_produk.</div>';
+    });
+  }
+}
+</script>
+
+<!-- COMMUNITY IMPACT API: Web_community_impact -->
 <script>
 const COMMUNITY_API_URL = "https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec";
 let communityImpactData = [];
 
-function cleanImpactValue(value){
-  return String(value ?? "").trim();
-}
+function cleanImpactValue(value){ return String(value ?? "").trim(); }
 
 function normalizeImpactCategory(value){
   const s = cleanImpactValue(value).toLowerCase();
-  if (s.includes("kelompok")) return "Kelompok";
-  if (s.includes("individu")) return "Individu";
+  if(s.includes("kelompok")) return "Kelompok";
+  if(s.includes("individu")) return "Individu";
   return "";
 }
 
 function normalizeGender(value){
   const s = cleanImpactValue(value).toLowerCase();
-  if (s.includes("laki")) return "Laki-laki";
-  if (s.includes("perempuan")) return "Perempuan";
-  if (s.includes("other") || s.includes("lain")) return "Other";
+  if(s.includes("laki")) return "Laki-laki";
+  if(s.includes("perempuan")) return "Perempuan";
+  if(s.includes("other") || s.includes("lain")) return "Other";
   return "";
 }
 
@@ -544,7 +726,7 @@ async function loadCommunityImpactData(){
   }catch(error){
     console.error("Community Impact API Error:", error);
     const note = document.getElementById("impactCountNote");
-    if(note) note.textContent = "Data Community Impact belum dapat dimuat. Pastikan API sheet penerima_manfaat sudah aktif.";
+    if(note) note.textContent = "Data Community Impact belum dapat dimuat. Pastikan Web_community_impact aktif.";
   }
 }
 
@@ -568,8 +750,14 @@ function buildCommunityImpactFilters(data){
   });
 
   const search=document.getElementById("impactSearchName");
-  search?.addEventListener("input",applyCommunityImpactFilters);
-  locationSelect.addEventListener("change",applyCommunityImpactFilters);
+  if(search && search.dataset.ready !== "1"){
+    search.addEventListener("input",applyCommunityImpactFilters);
+    search.dataset.ready="1";
+  }
+  if(locationSelect.dataset.ready !== "1"){
+    locationSelect.addEventListener("change",applyCommunityImpactFilters);
+    locationSelect.dataset.ready="1";
+  }
 }
 
 function applyCommunityImpactFilters(){
@@ -584,7 +772,6 @@ function applyCommunityImpactFilters(){
     if(location && rowLocation !== location) return false;
     return true;
   });
-
   updateCommunityImpact(filtered);
 }
 
@@ -600,7 +787,10 @@ function updateCommunityImpact(data){
     if(gender === "Other") other++;
   });
 
-  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value.toLocaleString("id-ID");};
+  const set=(id,value)=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=value.toLocaleString("id-ID");
+  };
   set("impactKelompok",kelompok);
   set("impactIndividu",individu);
   set("impactLaki",laki);
@@ -617,6 +807,7 @@ function updateCommunityImpact(data){
     body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted)">Tidak ada data sesuai pencarian.</td></tr>';
     return;
   }
+
   data.forEach(row=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
@@ -632,28 +823,21 @@ function updateCommunityImpact(data){
 }
 </script>
 
-<!-- SUSTAINABILITY API -->
+<!-- SUSTAINABILITY API: dipertahankan -->
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
-
 let sustainabilityData = [];
 
 async function loadSustainabilityData() {
   try {
     const response = await fetch(API_URL);
     if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet");
-
     const payload = await response.json();
     const data = Array.isArray(payload) ? payload : payload.data;
-
-    if (!Array.isArray(data)) {
-      throw new Error("Format data API tidak sesuai");
-    }
+    if (!Array.isArray(data)) throw new Error("Format data API tidak sesuai");
 
     sustainabilityData = data;
-
     updateLocationSection(sustainabilityData);
-
     buildSustainabilityFilters(sustainabilityData);
     updateSustainabilityDashboard(sustainabilityData);
     setupSustainabilityFilters();
@@ -668,17 +852,12 @@ let locationLayer = null;
 function parseCoordinate(value) {
   const text = cleanValue(value);
   if (!text) return null;
-
-  // AppSheet Location umum: "4.135163, 96.168977"
   const match = text.match(/(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)/);
   if (!match) return null;
-
   const lat = Number(match[1]);
   const lng = Number(match[2]);
-
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
   if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
-
   return { lat, lng };
 }
 
@@ -690,22 +869,12 @@ function googleEarthUrl(lat, lng) {
   return `https://earth.google.com/web/@${lat},${lng},1000a,35y,0h,0t,0r`;
 }
 
-function getLocationMarkerColor(value) {
-  const s = String(value || "").toLowerCase().trim();
-
-  if (s.includes("masih berjalan") || s === "baik" || s.includes("baik/berjalan") || s === "berjalan") {
-    return "#087443"; // Masih Berjalan
-  }
-
-  if (s === "mati" || s.includes("mati")) {
-    return "#c84f45"; // Mati
-  }
-
-  if (s.includes("tidak berkembang") || s.includes("kurang baik")) {
-    return "#e3a12b"; // Tidak Berkembang/Kurang Baik
-  }
-
-  return "#7d8782"; // Belum Monitoring / status kosong
+function getStatusPinClass(summary){
+  const s = normalizeSummary(summary);
+  if(s === "Masih Berjalan") return "status-running";
+  if(s === "Mati") return "status-dead";
+  if(s === "Tidak Berkembang") return "status-poor";
+  return "status-unmonitored";
 }
 
 function updateLocationSection(data) {
@@ -714,12 +883,9 @@ function updateLocationSection(data) {
   const withoutCoordElement = document.getElementById("locationWithoutCoord");
   const noteElement = document.getElementById("locationNote");
   const tableBody = document.getElementById("locationSummaryBody");
-
   if (!mapElement) return;
 
-  // Pastikan hanya data dari Web_binaan yang dipakai.
   const records = Array.isArray(data) ? data : [];
-
   const withCoordinate = [];
   const withoutCoordinate = [];
   const byRecipient = {};
@@ -728,15 +894,10 @@ function updateLocationSection(data) {
     const description = cleanValue(row["Deskripsi"]);
     const recipient = cleanValue(row["Penerima Manfaat"]);
     const coordinate = parseCoordinate(row["Koordinat Sustain"]);
-
-    // Hanya hitung record yang mempunyai Deskripsi.
     if (!description) return;
 
     const key = recipient || "Belum diisi";
-
-    if (!byRecipient[key]) {
-      byRecipient[key] = { withCoord: 0, withoutCoord: 0 };
-    }
+    if (!byRecipient[key]) byRecipient[key] = { withCoord: 0, withoutCoord: 0 };
 
     if (coordinate) {
       withCoordinate.push({ row, coordinate, description, recipient });
@@ -747,93 +908,64 @@ function updateLocationSection(data) {
     }
   });
 
-  if (withCoordElement) {
-    withCoordElement.textContent = withCoordinate.length.toLocaleString("id-ID");
-  }
-
-  if (withoutCoordElement) {
-    withoutCoordElement.textContent = withoutCoordinate.length.toLocaleString("id-ID");
-  }
-
+  if (withCoordElement) withCoordElement.textContent = withCoordinate.length.toLocaleString("id-ID");
+  if (withoutCoordElement) withoutCoordElement.textContent = withoutCoordinate.length.toLocaleString("id-ID");
   if (noteElement) {
     noteElement.innerHTML = `<strong>${withoutCoordinate.length.toLocaleString("id-ID")} deskripsi</strong> belum memiliki koordinat. Data tersebut belum ditampilkan sebagai titik di peta. Koordinat dapat diisi melalui AppSheet pada kolom <strong>Koordinat Sustain</strong>.`;
   }
 
-  // Tabel ringkasan penerima manfaat/lokasi.
   if (tableBody) {
     tableBody.innerHTML = "";
-
-    const entries = Object.entries(byRecipient)
-      .sort((a, b) => a[0].localeCompare(b[0], "id", { sensitivity: "base", numeric: true }));
-
+    const entries = Object.entries(byRecipient).sort((a,b)=>a[0].localeCompare(b[0],"id",{sensitivity:"base",numeric:true}));
     if (entries.length === 0) {
       tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--muted)">Belum ada data lokasi.</td></tr>`;
     } else {
       entries.forEach(([recipient, counts]) => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${escapeHtml(recipient)}</td>
-          <td>${counts.withCoord.toLocaleString("id-ID")}</td>
-          <td>${counts.withoutCoord.toLocaleString("id-ID")}</td>
-        `;
+        tr.innerHTML = `<td>${escapeHtml(recipient)}</td><td>${counts.withCoord.toLocaleString("id-ID")}</td><td>${counts.withoutCoord.toLocaleString("id-ID")}</td>`;
         tableBody.appendChild(tr);
       });
     }
   }
 
-  // Inisialisasi peta satu kali.
   if (!window.L) {
-    noteElement && (noteElement.textContent = "Peta belum dapat dimuat. Silakan periksa koneksi internet.");
+    if(noteElement) noteElement.textContent = "Peta belum dapat dimuat. Silakan periksa koneksi internet.";
     return;
   }
 
   if (!locationMap) {
-    locationMap = L.map(mapElement, {
-      scrollWheelZoom: true,
-      zoomControl: true
-    });
-
-    // Basemap utama menggunakan Esri World Street Map agar
-    // latar peta tetap tampil pada halaman publik.
-    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
-      maxZoom: 19,
-      attribution: 'Tiles &copy; Esri'
+    locationMap = L.map(mapElement,{scrollWheelZoom:true,zoomControl:true});
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",{
+      maxZoom:19,attribution:"Tiles &copy; Esri"
     }).addTo(locationMap);
-
     locationLayer = L.layerGroup().addTo(locationMap);
   } else {
     locationLayer.clearLayers();
   }
 
   if (withCoordinate.length === 0) {
-    locationMap.setView([4.135163, 96.168977], 12);
-    setTimeout(() => locationMap.invalidateSize(), 150);
+    locationMap.setView([4.135163,96.168977],12);
+    setTimeout(()=>locationMap.invalidateSize(),150);
     return;
   }
 
   const bounds = [];
-
   withCoordinate.forEach(item => {
-    const { row, coordinate, description, recipient } = item;
-    const year = cleanValue(row["Tahun Budget"]);
-    const summary = cleanValue(row["Summary Monev"]);
-    const markerColor = getLocationMarkerColor(summary);
+    const {row,coordinate,description,recipient}=item;
+    const year=cleanValue(row["Tahun Budget"]);
+    const summary=cleanValue(row["Summary Monev"]);
+    const iconClass=getStatusPinClass(summary);
 
-    // Pin lokasi: warna mengikuti Summary Monev.
-    const markerIcon = L.divIcon({
-      className: "location-pin-wrap",
-      html: `<div class="location-pin" style="background:${markerColor}"></div>`,
-      iconSize: [22, 22],
-      iconAnchor: [11, 22],
-      popupAnchor: [0, -22],
-      tooltipAnchor: [0, -22]
+    const icon=L.divIcon({
+      className:"",
+      html:`<div class="status-pin ${iconClass}"></div>`,
+      iconSize:[14,14],
+      iconAnchor:[7,14],
+      popupAnchor:[0,-12]
     });
 
-    const marker = L.marker([coordinate.lat, coordinate.lng], {
-      icon: markerIcon
-    });
-
-    const popup = `
+    const marker=L.marker([coordinate.lat,coordinate.lng],{icon});
+    const popup=`
       <div class="location-popup">
         <div class="meta"><b>Deskripsi Program:</b></div>
         <h4>${escapeHtml(description)}</h4>
@@ -842,185 +974,116 @@ function updateLocationSection(data) {
         <div class="meta"><b>Summary Monev:</b> ${escapeHtml(summary || "-")}</div>
         <div class="meta"><b>Koordinat:</b> ${coordinate.lat.toFixed(6)}, ${coordinate.lng.toFixed(6)}</div>
         <div class="popup-actions">
-          <a href="${googleMapsUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Maps</a>
-          <a href="${googleEarthUrl(coordinate.lat, coordinate.lng)}" target="_blank" rel="noopener">Google Earth</a>
+          <a href="${googleMapsUrl(coordinate.lat,coordinate.lng)}" target="_blank" rel="noopener">Google Maps</a>
+          <a href="${googleEarthUrl(coordinate.lat,coordinate.lng)}" target="_blank" rel="noopener">Google Earth</a>
         </div>
-      </div>
-    `;
-
-    marker.bindPopup(popup, { maxWidth: 320 });
-    marker.bindTooltip(description, { direction: "top", offset: [0, -8] });
+      </div>`;
+    marker.bindPopup(popup,{maxWidth:320});
+    marker.bindTooltip(description,{direction:"top",offset:[0,-8]});
     marker.addTo(locationLayer);
-    bounds.push([coordinate.lat, coordinate.lng]);
+    bounds.push([coordinate.lat,coordinate.lng]);
   });
 
-  locationMap.fitBounds(bounds, {
-    padding: [30, 30],
-    maxZoom: 15
-  });
-
-  setTimeout(() => locationMap.invalidateSize(), 150);
+  locationMap.fitBounds(bounds,{padding:[30,30],maxZoom:15});
+  setTimeout(()=>locationMap.invalidateSize(),150);
 }
 
 function getCountMonev(row) {
-  const value = Number(row["Count Monev"]);
-  return Number.isFinite(value) ? value : 0;
+  const value=Number(row["Count Monev"]);
+  return Number.isFinite(value)?value:0;
 }
 
 function normalizeSummary(value) {
-  const s = String(value || "").toLowerCase().trim();
-
-  if (s.includes("belum monitoring")) return "Belum Monitoring";
-  if (s.includes("tidak berkembang") || s.includes("kurang baik")) return "Tidak Berkembang";
-  if (s === "mati" || s.includes("mati")) return "Mati";
-  if (s.includes("masih berjalan")) return "Masih Berjalan";
-  if (s === "baik" || s.includes("baik/berjalan") || s === "berjalan") return "Masih Berjalan";
-  if (s === "") return "Belum Monitoring";
-
+  const s=String(value||"").toLowerCase().trim();
+  if(s.includes("belum monitoring")) return "Belum Monitoring";
+  if(s.includes("tidak berkembang") || s.includes("kurang baik")) return "Tidak Berkembang";
+  if(s==="mati" || s.includes("mati")) return "Mati";
+  if(s.includes("masih berjalan")) return "Masih Berjalan";
+  if(s==="baik" || s.includes("baik/berjalan") || s==="berjalan") return "Masih Berjalan";
+  if(s==="") return "Belum Monitoring";
   return "Belum Monitoring";
 }
 
-function cleanValue(value) {
-  return String(value ?? "").trim();
-}
+function cleanValue(value){ return String(value??"").trim(); }
 
-function uniqueSorted(values) {
-  return [...new Set(values.map(cleanValue).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "id", { sensitivity: "base" }));
+function uniqueSorted(values){
+  return [...new Set(values.map(cleanValue).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"id",{sensitivity:"base"}));
 }
 
 function buildSustainabilityFilters(data) {
-  const yearSelect = document.getElementById("filterTahun");
-  const recipientSelect = document.getElementById("filterPenerima");
-  const activitySelect = document.getElementById("filterActivity");
-  const summarySelect = document.getElementById("filterSummary");
+  const yearSelect=document.getElementById("filterTahun");
+  const recipientSelect=document.getElementById("filterPenerima");
+  const activitySelect=document.getElementById("filterActivity");
+  const summarySelect=document.getElementById("filterSummary");
+  if(!yearSelect||!recipientSelect||!activitySelect||!summarySelect)return;
 
-  if (!yearSelect || !recipientSelect || !activitySelect || !summarySelect) return;
-
-  const years = uniqueSorted(
-    data.map(row => cleanValue(row["Tahun Budget"]))
-  ).sort((a, b) => {
-    const na = Number(a), nb = Number(b);
-    if (Number.isFinite(na) && Number.isFinite(nb)) return nb - na;
+  const years=uniqueSorted(data.map(row=>cleanValue(row["Tahun Budget"]))).sort((a,b)=>{
+    const na=Number(a),nb=Number(b);
+    if(Number.isFinite(na)&&Number.isFinite(nb))return nb-na;
     return b.localeCompare(a);
   });
+  const recipients=uniqueSorted(data.map(row=>row["Penerima Manfaat"]));
+  const activities=uniqueSorted(data.map(row=>row["Activity"]));
+  const summaryOptions=["Masih Berjalan","Mati","Tidak Berkembang / Kurang Baik","Belum Monitoring"];
 
-  const recipients = uniqueSorted(
-    data.map(row => row["Penerima Manfaat"])
-  );
-
-  const activities = uniqueSorted(
-    data.map(row => row["Activity"])
-  );
-
-  const summaryOptions = [
-    "Masih Berjalan",
-    "Mati",
-    "Tidak Berkembang / Kurang Baik",
-    "Belum Monitoring"
-  ];
-
-  yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
-  years.forEach(year => {
-    const option = document.createElement("option");
-    option.value = year;
-    option.textContent = year;
-    yearSelect.appendChild(option);
-  });
-
-  recipientSelect.innerHTML = '<option value="">Semua Penerima Manfaat</option>';
-  recipients.forEach(recipient => {
-    const option = document.createElement("option");
-    option.value = recipient;
-    option.textContent = recipient;
-    recipientSelect.appendChild(option);
-  });
-
-  activitySelect.innerHTML = '<option value="">Semua Activity</option>';
-  activities.forEach(activity => {
-    const option = document.createElement("option");
-    option.value = activity;
-    option.textContent = activity;
-    activitySelect.appendChild(option);
-  });
-
-  summarySelect.innerHTML = '<option value="">Semua Summary Monev</option>';
-  summaryOptions.forEach(summary => {
-    const option = document.createElement("option");
-    option.value = summary;
-    option.textContent = summary;
-    summarySelect.appendChild(option);
-  });
+  yearSelect.innerHTML='<option value="">Semua Tahun</option>';
+  years.forEach(year=>{const o=document.createElement("option");o.value=year;o.textContent=year;yearSelect.appendChild(o);});
+  recipientSelect.innerHTML='<option value="">Semua Penerima Manfaat</option>';
+  recipients.forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;recipientSelect.appendChild(o);});
+  activitySelect.innerHTML='<option value="">Semua Activity</option>';
+  activities.forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;activitySelect.appendChild(o);});
+  summarySelect.innerHTML='<option value="">Semua Summary Monev</option>';
+  summaryOptions.forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;summarySelect.appendChild(o);});
 }
 
 function setupSustainabilityFilters() {
-  const yearSelect = document.getElementById("filterTahun");
-  const recipientSelect = document.getElementById("filterPenerima");
-  const activitySelect = document.getElementById("filterActivity");
-  const summarySelect = document.getElementById("filterSummary");
+  const yearSelect=document.getElementById("filterTahun");
+  const recipientSelect=document.getElementById("filterPenerima");
+  const activitySelect=document.getElementById("filterActivity");
+  const summarySelect=document.getElementById("filterSummary");
+  if(!yearSelect||!recipientSelect||!activitySelect||!summarySelect)return;
+  if(yearSelect.dataset.ready==="1")return;
 
-  if (!yearSelect || !recipientSelect || !activitySelect || !summarySelect) return;
+  const applyFilters=()=>{
+    const selectedYear=cleanValue(yearSelect.value);
+    const selectedRecipient=cleanValue(recipientSelect.value);
+    const selectedActivity=cleanValue(activitySelect.value);
+    const selectedSummary=cleanValue(summarySelect.value);
 
-  // Hindari memasang listener lebih dari sekali.
-  if (yearSelect.dataset.ready === "1") return;
-
-  const applyFilters = () => {
-    const selectedYear = cleanValue(yearSelect.value);
-    const selectedRecipient = cleanValue(recipientSelect.value);
-    const selectedActivity = cleanValue(activitySelect.value);
-    const selectedSummary = cleanValue(summarySelect.value);
-
-    const filteredData = sustainabilityData.filter(row => {
-      const year = cleanValue(row["Tahun Budget"]);
-      const recipient = cleanValue(row["Penerima Manfaat"]);
-      const activity = cleanValue(row["Activity"]);
-      const summary = normalizeSummary(row["Summary Monev"]);
-      const summaryLabel = summary === "Tidak Berkembang"
-        ? "Tidak Berkembang / Kurang Baik"
-        : summary;
-
-      if (selectedYear && year !== selectedYear) return false;
-      if (selectedRecipient && recipient !== selectedRecipient) return false;
-      if (selectedActivity && activity !== selectedActivity) return false;
-      if (selectedSummary && summaryLabel !== selectedSummary) return false;
-
+    const filteredData=sustainabilityData.filter(row=>{
+      const year=cleanValue(row["Tahun Budget"]);
+      const recipient=cleanValue(row["Penerima Manfaat"]);
+      const activity=cleanValue(row["Activity"]);
+      const summary=normalizeSummary(row["Summary Monev"]);
+      const summaryLabel=summary==="Tidak Berkembang"?"Tidak Berkembang / Kurang Baik":summary;
+      if(selectedYear&&year!==selectedYear)return false;
+      if(selectedRecipient&&recipient!==selectedRecipient)return false;
+      if(selectedActivity&&activity!==selectedActivity)return false;
+      if(selectedSummary&&summaryLabel!==selectedSummary)return false;
       return true;
     });
-
     updateSustainabilityDashboard(filteredData);
   };
 
-  yearSelect.addEventListener("change", applyFilters);
-  recipientSelect.addEventListener("change", applyFilters);
-  activitySelect.addEventListener("change", applyFilters);
-  summarySelect.addEventListener("change", applyFilters);
-
-  yearSelect.dataset.ready = "1";
+  yearSelect.addEventListener("change",applyFilters);
+  recipientSelect.addEventListener("change",applyFilters);
+  activitySelect.addEventListener("change",applyFilters);
+  summarySelect.addEventListener("change",applyFilters);
+  yearSelect.dataset.ready="1";
 }
 
 function renderProgramTable(data) {
-  const tbody = document.getElementById("programTableBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  // Tabel menampilkan SETIAP baris hasil filter.
-  // Monitoring Code boleh berulang karena satu Monitoring Code
-  // dapat memiliki beberapa Deskripsi / record program yang berbeda.
-  const programs = data.filter(row => {
-    return cleanValue(row["Monitoring Code"]) !== "";
-  });
-
-  if (programs.length === 0) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td class="empty" colspan="9">Tidak ada program sesuai filter yang dipilih.</td>`;
-    tbody.appendChild(tr);
+  const tbody=document.getElementById("programTableBody");
+  if(!tbody)return;
+  tbody.innerHTML="";
+  const programs=data.filter(row=>cleanValue(row["Monitoring Code"])!=="");
+  if(programs.length===0){
+    tbody.innerHTML='<tr><td class="empty" colspan="9">Tidak ada program sesuai filter yang dipilih.</td></tr>';
     return;
   }
-
-  programs.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
+  programs.forEach(row=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
       <td><b>${escapeHtml(cleanValue(row["Monitoring Code"]))}</b></td>
       <td>${escapeHtml(cleanValue(row["Deskripsi"]))}</td>
       <td>${escapeHtml(cleanValue(row["Activity"]))}</td>
@@ -1029,296 +1092,162 @@ function renderProgramTable(data) {
       <td>${escapeHtml(cleanValue(row["Hasil Monev Sustain"]))}</td>
       <td>${escapeHtml(cleanValue(row["Status Monitoring (Sustain)"]))}</td>
       <td>${escapeHtml(formatDateValue(row["Tgl Monev Sustain"]))}</td>
-      <td>${escapeHtml(cleanValue(row["Summary Monev"]))}</td>
-    `;
+      <td>${escapeHtml(cleanValue(row["Summary Monev"]))}</td>`;
     tbody.appendChild(tr);
   });
 }
 
 function formatDateValue(value) {
-  if (value === null || value === undefined || value === "") return "";
-
-  const text = String(value).trim();
-  if (!text) return "";
-
-  // Pertahankan format tanggal yang dikirim API bila sudah berupa tanggal.
-  // Hindari menampilkan 1 Januari 1900 untuk nilai kosong/0.
-  if (text === "0" || text === "1/0/1900" || text === "01/01/1900") return "";
-
-  const date = new Date(value);
-  if (!Number.isNaN(date.getTime())) {
-    return date.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
+  if(value===null||value===undefined||value==="")return "";
+  const text=String(value).trim();
+  if(!text||text==="0"||text==="1/0/1900"||text==="01/01/1900")return "";
+  const date=new Date(value);
+  if(!Number.isNaN(date.getTime())){
+    return date.toLocaleDateString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric"});
   }
-
   return text;
 }
 
 function updateSustainabilityDashboard(data) {
-  const section = document.querySelector("#sustainability");
-  if (!section || !Array.isArray(data)) return;
+  const section=document.querySelector("#sustainability");
+  if(!section||!Array.isArray(data))return;
 
-  // Hanya data Sustain/No selain "No".
-  const records = data.filter(row => {
-    const sustain = cleanValue(row["Sustain/No"]).toLowerCase();
-    return sustain !== "no";
-  });
-
-  // Tabel program mengikuti setiap baris hasil filter.
-  // Monitoring Code boleh berulang jika Deskripsi/record berbeda.
+  const records=data.filter(row=>cleanValue(row["Sustain/No"]).toLowerCase()!=="no");
   renderProgramTable(records);
 
-  // =====================================================
-  // SUMMARY MONEV - menggunakan Count Monev
-  // =====================================================
-  let totalProgram = 0;
-  const summaryCount = {
-    "Masih Berjalan": 0,
-    "Mati": 0,
-    "Tidak Berkembang": 0,
-    "Belum Monitoring": 0
-  };
+  let totalProgram=0;
+  const summaryCount={"Masih Berjalan":0,"Mati":0,"Tidak Berkembang":0,"Belum Monitoring":0};
 
-  records.forEach(row => {
-    const count = getCountMonev(row);
-    if (count <= 0) return;
-
-    const summary = normalizeSummary(row["Summary Monev"]);
-    totalProgram += count;
-
-    if (Object.prototype.hasOwnProperty.call(summaryCount, summary)) {
-      summaryCount[summary] += count;
-    }
+  records.forEach(row=>{
+    const count=getCountMonev(row);
+    if(count<=0)return;
+    const summary=normalizeSummary(row["Summary Monev"]);
+    totalProgram+=count;
+    if(Object.prototype.hasOwnProperty.call(summaryCount,summary))summaryCount[summary]+=count;
   });
 
-  // KPI
-  const kpis = section.querySelectorAll(".kpi b");
-  const labels = section.querySelectorAll(".kpi small");
-
-  if (kpis.length >= 5) {
-    kpis[0].textContent = totalProgram.toLocaleString("id-ID");
-    kpis[1].textContent = summaryCount["Masih Berjalan"].toLocaleString("id-ID");
-    kpis[2].textContent = summaryCount["Mati"].toLocaleString("id-ID");
-    kpis[3].textContent = summaryCount["Tidak Berkembang"].toLocaleString("id-ID");
-    kpis[4].textContent = summaryCount["Belum Monitoring"].toLocaleString("id-ID");
+  const kpis=section.querySelectorAll(".kpi b");
+  const labels=section.querySelectorAll(".kpi small");
+  if(kpis.length>=5){
+    kpis[0].textContent=totalProgram.toLocaleString("id-ID");
+    kpis[1].textContent=summaryCount["Masih Berjalan"].toLocaleString("id-ID");
+    kpis[2].textContent=summaryCount["Mati"].toLocaleString("id-ID");
+    kpis[3].textContent=summaryCount["Tidak Berkembang"].toLocaleString("id-ID");
+    kpis[4].textContent=summaryCount["Belum Monitoring"].toLocaleString("id-ID");
+  }
+  if(labels.length>=5){
+    labels[0].textContent="Total Program";
+    labels[1].textContent="Masih Berjalan";
+    labels[2].textContent="Mati";
+    labels[3].textContent="Tidak Berkembang / Kurang Baik";
+    labels[4].textContent="Belum Monitoring";
   }
 
-  if (labels.length >= 5) {
-    labels[0].textContent = "Total Program";
-    labels[1].textContent = "Masih Berjalan";
-    labels[2].textContent = "Mati";
-    labels[3].textContent = "Tidak Berkembang / Kurang Baik";
-    labels[4].textContent = "Belum Monitoring";
-  }
-
-  const chartBoxes = section.querySelectorAll(".chartbox");
-  let summaryChart = null;
-  let activityChart = null;
-  let villageChart = null;
-
-  chartBoxes.forEach(box => {
-    const title = box.querySelector("h3");
-    if (!title) return;
-
-    const t = title.textContent.toLowerCase().trim();
-    if (t === "summary monev") summaryChart = box;
-    if (t === "activity") activityChart = box;
-    if (t.includes("penerima manfaat per gampong")) villageChart = box;
+  const chartBoxes=section.querySelectorAll(".chartbox");
+  let summaryChart=null,activityChart=null,villageChart=null;
+  chartBoxes.forEach(box=>{
+    const title=box.querySelector("h3");if(!title)return;
+    const t=title.textContent.toLowerCase().trim();
+    if(t==="summary monev")summaryChart=box;
+    if(t==="activity")activityChart=box;
+    if(t.includes("penerima manfaat per gampong"))villageChart=box;
   });
 
-  // =====================================================
-  // GRAFIK SUMMARY MONEV
-  // =====================================================
-  if (summaryChart) {
-    const bars = summaryChart.querySelectorAll(".barrow");
-    const maxValue = Math.max(
-      summaryCount["Masih Berjalan"],
-      summaryCount["Mati"],
-      summaryCount["Tidak Berkembang"],
-      summaryCount["Belum Monitoring"],
-      1
-    );
-
-    bars.forEach(bar => {
-      const label = bar.querySelector("span");
-      const fill = bar.querySelector(".bar i");
-      const number = bar.querySelector("b");
-      if (!label) return;
-
-      const name = label.textContent.toLowerCase().trim();
-      let value = 0;
-
-      if (name.includes("masih berjalan")) value = summaryCount["Masih Berjalan"];
-      else if (name === "mati") value = summaryCount["Mati"];
-      else if (name.includes("tidak berkembang") || name.includes("kurang baik")) value = summaryCount["Tidak Berkembang"];
-      else if (name.includes("belum monitoring")) value = summaryCount["Belum Monitoring"];
-
-      if (fill) fill.style.width = ((value / maxValue) * 100) + "%";
-      if (number) number.textContent = value.toLocaleString("id-ID");
+  if(summaryChart){
+    const bars=summaryChart.querySelectorAll(".barrow");
+    const maxValue=Math.max(summaryCount["Masih Berjalan"],summaryCount["Mati"],summaryCount["Tidak Berkembang"],summaryCount["Belum Monitoring"],1);
+    bars.forEach(bar=>{
+      const label=bar.querySelector("span"),fill=bar.querySelector(".bar i"),number=bar.querySelector("b");
+      if(!label)return;
+      const name=label.textContent.toLowerCase().trim();
+      let value=0;
+      if(name.includes("masih berjalan"))value=summaryCount["Masih Berjalan"];
+      else if(name==="mati")value=summaryCount["Mati"];
+      else if(name.includes("tidak berkembang")||name.includes("kurang baik"))value=summaryCount["Tidak Berkembang"];
+      else if(name.includes("belum monitoring"))value=summaryCount["Belum Monitoring"];
+      if(fill)fill.style.width=((value/maxValue)*100)+"%";
+      if(number)number.textContent=value.toLocaleString("id-ID");
     });
   }
 
-  // =====================================================
-  // GRAFIK ACTIVITY - menggunakan Count Monev
-  // =====================================================
-  const activities = ["Peternakan", "Perikanan", "Pertanian", "Perkebunan", "Ekonomi"];
-  const activityCount = {};
-  activities.forEach(name => activityCount[name] = 0);
-
-  records.forEach(row => {
-    const activity = cleanValue(row["Activity"]).toLowerCase();
-    const count = getCountMonev(row);
-    if (!activity || count <= 0) return;
-
-    activities.forEach(name => {
-      if (activity === name.toLowerCase()) activityCount[name] += count;
-    });
+  const activities=["Peternakan","Perikanan","Pertanian","Perkebunan","Ekonomi"];
+  const activityCount={};activities.forEach(name=>activityCount[name]=0);
+  records.forEach(row=>{
+    const activity=cleanValue(row["Activity"]).toLowerCase();
+    const count=getCountMonev(row);
+    if(!activity||count<=0)return;
+    activities.forEach(name=>{if(activity===name.toLowerCase())activityCount[name]+=count;});
   });
-
-  if (activityChart) {
-    const bars = activityChart.querySelectorAll(".barrow");
-    const maxActivity = Math.max(...activities.map(name => activityCount[name]), 1);
-
-    bars.forEach(bar => {
-      const label = bar.querySelector("span");
-      const fill = bar.querySelector(".bar i");
-      const number = bar.querySelector("b");
-      if (!label) return;
-
-      const name = label.textContent.trim();
-      const value = activityCount[name] || 0;
-
-      if (fill) fill.style.width = ((value / maxActivity) * 100) + "%";
-      if (number) number.textContent = value.toLocaleString("id-ID");
+  if(activityChart){
+    const bars=activityChart.querySelectorAll(".barrow");
+    const maxActivity=Math.max(...activities.map(name=>activityCount[name]),1);
+    bars.forEach(bar=>{
+      const label=bar.querySelector("span"),fill=bar.querySelector(".bar i"),number=bar.querySelector("b");
+      if(!label)return;
+      const value=activityCount[label.textContent.trim()]||0;
+      if(fill)fill.style.width=((value/maxActivity)*100)+"%";
+      if(number)number.textContent=value.toLocaleString("id-ID");
     });
   }
 
-  // =====================================================
-  // PENERIMA MANFAAT PER GAMPONG
-  // Hanya Summary Monev: Masih Berjalan + Tidak Berkembang
-  // Nilai: Count Monev
-  // =====================================================
-  const villageCount = {};
-
-  records.forEach(row => {
-    const village = cleanValue(row["Penerima Manfaat"]);
-    const count = getCountMonev(row);
-    const summary = normalizeSummary(row["Summary Monev"]);
-
-    if (!village || count <= 0) return;
-    if (summary !== "Masih Berjalan" && summary !== "Tidak Berkembang") return;
-
-    villageCount[village] = (villageCount[village] || 0) + count;
+  const villageCount={};
+  records.forEach(row=>{
+    const village=cleanValue(row["Penerima Manfaat"]);
+    const count=getCountMonev(row);
+    const summary=normalizeSummary(row["Summary Monev"]);
+    if(!village||count<=0)return;
+    if(summary!=="Masih Berjalan"&&summary!=="Tidak Berkembang")return;
+    villageCount[village]=(villageCount[village]||0)+count;
   });
 
-  if (villageChart) {
-    const oldBars = villageChart.querySelectorAll(".barrow");
-    const container = oldBars.length > 0 ? oldBars[0].parentElement : villageChart;
-
-    oldBars.forEach(row => row.remove());
-
-    // Hapus pesan kosong lama jika ada.
-    villageChart.querySelectorAll(".village-empty").forEach(el => el.remove());
-
-    const villages = Object.entries(villageCount).sort((a, b) => b[1] - a[1]);
-    const maxVillage = Math.max(...villages.map(item => item[1]), 1);
-
-    if (villages.length === 0) {
-      const empty = document.createElement("p");
-      empty.className = "status-note village-empty";
-      empty.textContent = "Belum ada data gampong untuk filter yang dipilih.";
+  if(villageChart){
+    const oldBars=villageChart.querySelectorAll(".barrow");
+    const container=oldBars.length>0?oldBars[0].parentElement:villageChart;
+    oldBars.forEach(row=>row.remove());
+    villageChart.querySelectorAll(".village-empty").forEach(el=>el.remove());
+    const villages=Object.entries(villageCount).sort((a,b)=>b[1]-a[1]);
+    const maxVillage=Math.max(...villages.map(item=>item[1]),1);
+    if(villages.length===0){
+      const empty=document.createElement("p");
+      empty.className="status-note village-empty";
+      empty.textContent="Belum ada data gampong untuk filter yang dipilih.";
       container.appendChild(empty);
-    } else {
-      villages.forEach(([village, value]) => {
-        const row = document.createElement("div");
-        row.className = "barrow";
-        const width = (value / maxVillage) * 100;
-
-        row.innerHTML = `
-          <span>${escapeHtml(village)}</span>
-          <div class="bar"><i style="width:${width}%"></i></div>
-          <b>${value.toLocaleString("id-ID")}</b>
-        `;
-
+    }else{
+      villages.forEach(([village,value])=>{
+        const row=document.createElement("div");row.className="barrow";
+        const width=(value/maxVillage)*100;
+        row.innerHTML=`<span>${escapeHtml(village)}</span><div class="bar"><i style="width:${width}%"></i></div><b>${value.toLocaleString("id-ID")}</b>`;
         container.appendChild(row);
       });
     }
   }
 
-  // =====================================================
-  // DONUT ACTIVITY × SUMMARY MONEV
-  // =====================================================
-  const donut = section.querySelector(".donut");
-
-  if (donut) {
-    const total = totalProgram || 1;
-    const running = summaryCount["Masih Berjalan"];
-    const mati = summaryCount["Mati"];
-    const tidakBerkembang = summaryCount["Tidak Berkembang"];
-    const belumMonitoring = summaryCount["Belum Monitoring"];
-
-    const p1 = running / total * 100;
-    const p2 = mati / total * 100;
-    const p3 = tidakBerkembang / total * 100;
-
-    donut.style.background = `conic-gradient(
-      #087443 0 ${p1}%,
-      #c86b5e ${p1}% ${p1 + p2}%,
-      #e3a84b ${p1 + p2}% ${p1 + p2 + p3}%,
-      #dfe5e1 ${p1 + p2 + p3}% 100%
-    )`;
-
-    let donutStyle = document.getElementById("dynamic-donut-style");
-    if (!donutStyle) {
-      donutStyle = document.createElement("style");
-      donutStyle.id = "dynamic-donut-style";
-      document.head.appendChild(donutStyle);
-    }
-
-    donutStyle.textContent = `
-      .donut::after {
-        content: "TOTAL\\A PROGRAM\\A ${totalProgram.toLocaleString("id-ID")}";
-        white-space: pre;
-        text-align: center;
-        line-height: 1.5;
-      }
-    `;
-
-    const legend = section.querySelector("#summaryDonutLegend");
-    if (legend) {
-      const items = legend.querySelectorAll(".legend-value");
-      const values = [running, mati, tidakBerkembang, belumMonitoring];
-      items.forEach((item, index) => {
-        if (index < values.length) {
-          item.textContent = values[index].toLocaleString("id-ID");
-        }
-      });
+  const donut=section.querySelector(".donut");
+  if(donut){
+    const total=totalProgram||1;
+    const running=summaryCount["Masih Berjalan"],mati=summaryCount["Mati"],tidakBerkembang=summaryCount["Tidak Berkembang"],belumMonitoring=summaryCount["Belum Monitoring"];
+    const p1=running/total*100,p2=mati/total*100,p3=tidakBerkembang/total*100;
+    donut.style.background=`conic-gradient(#087443 0 ${p1}%,#c86b5e ${p1}% ${p1+p2}%,#e3a84b ${p1+p2}% ${p1+p2+p3}%,#dfe5e1 ${p1+p2+p3}% 100%)`;
+    let donutStyle=document.getElementById("dynamic-donut-style");
+    if(!donutStyle){donutStyle=document.createElement("style");donutStyle.id="dynamic-donut-style";document.head.appendChild(donutStyle);}
+    donutStyle.textContent=`.donut::after{content:"TOTAL\\A PROGRAM\\A ${totalProgram.toLocaleString("id-ID")}";white-space:pre;text-align:center;line-height:1.5;}`;
+    const legend=section.querySelector("#summaryDonutLegend");
+    if(legend){
+      const items=legend.querySelectorAll(".legend-value");
+      const values=[running,mati,tidakBerkembang,belumMonitoring];
+      items.forEach((item,index)=>{if(index<values.length)item.textContent=values[index].toLocaleString("id-ID");});
     }
   }
-
-  console.log("===== SUSTAINABILITY =====");
-  console.log("Total Program:", totalProgram);
-  console.log("Masih Berjalan:", summaryCount["Masih Berjalan"]);
-  console.log("Mati:", summaryCount["Mati"]);
-  console.log("Tidak Berkembang:", summaryCount["Tidak Berkembang"]);
-  console.log("Belum Monitoring:", summaryCount["Belum Monitoring"]);
 }
 
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+function escapeHtml(value){
+  return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadSustainabilityData();
+document.addEventListener("DOMContentLoaded",()=>{
+  loadProductData();
   loadCommunityImpactData();
+  loadSustainabilityData();
 });
 </script>
 
