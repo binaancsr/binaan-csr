@@ -438,48 +438,6 @@ footer strong{font-size:14px}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<!-- JSONP LOADER: bekerja saat index.html dibuka langsung (file://) maupun saat di-host -->
-<script>
-function loadApiJsonp(url, timeoutMs = 15000){
-  return new Promise((resolve, reject) => {
-    const callbackName = "__binaanApiCallback_" + Date.now() + "_" + Math.floor(Math.random() * 1000000);
-    const script = document.createElement("script");
-    let finished = false;
-    const timer = setTimeout(() => finish(new Error("Timeout mengambil data API")), timeoutMs);
-
-    function cleanup(){
-      clearTimeout(timer);
-      try{ delete window[callbackName]; }catch(e){ window[callbackName] = undefined; }
-      script.remove();
-    }
-    function finish(error, data){
-      if(finished) return;
-      finished = true;
-      cleanup();
-      if(error) reject(error); else resolve(data);
-    }
-
-    window[callbackName] = payload => {
-      if(payload && payload.success === false){
-        finish(new Error(payload.message || "API mengembalikan error."));
-        return;
-      }
-      const data = Array.isArray(payload) ? payload : payload && payload.data;
-      if(!Array.isArray(data)){
-        finish(new Error("Format data API tidak sesuai."));
-        return;
-      }
-      finish(null, data);
-    };
-
-    script.onerror = () => finish(new Error("Gagal memuat endpoint API."));
-    script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + encodeURIComponent(callbackName);
-    script.async = true;
-    document.head.appendChild(script);
-  });
-}
-</script>
-
 <!-- PRODUCT API -->
 <script>
 const PRODUCT_API_URL = "https://script.google.com/macros/s/AKfycby9Z4BVbERlJ13p8J_GvbakhuvhAJbxEebTTJC90BoPXnPOkizeKXsEjzuZOJZfX-QT/exec";
@@ -689,27 +647,33 @@ function renderProductCategory(category, gridId, noteId){
   }
 }
 
-function loadProductData(){
-  return loadApiJsonp(PRODUCT_API_URL, 15000)
-    .then(data => {
-      productData = data;
-      renderProductCategory("Produk UMKM","productUmkmGrid","productUmkmNote");
-      renderProductCategory("Produk Jasa","productJasaGrid","productJasaNote");
-      renderProductCategory("Peternakan / Perikanan / Pertanian","productKomoditasGrid","productKomoditasNote");
-    })
-    .catch(error => {
-      console.error("Product API Error:", error);
-      ["productUmkmGrid","productJasaGrid","productKomoditasGrid"].forEach(id=>{
-        const grid = document.getElementById(id);
-        if(grid) grid.innerHTML = '<div class="product-empty">Data belum dapat dimuat. Periksa deployment web_produk dan dukungan JSONP.</div>';
-      });
+async function loadProductData(){
+  try{
+    const response = await fetch(PRODUCT_API_URL);
+    if(!response.ok) throw new Error("Gagal mengambil data Produk");
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : payload.data;
+    if(!Array.isArray(data)) throw new Error("Format data Produk tidak sesuai");
+
+    productData = data;
+
+    renderProductCategory("Produk UMKM","productUmkmGrid","productUmkmNote");
+    renderProductCategory("Produk Jasa","productJasaGrid","productJasaNote");
+    renderProductCategory("Peternakan / Perikanan / Pertanian","productKomoditasGrid","productKomoditasNote");
+  }catch(error){
+    console.error("Product API Error:", error);
+    ["productUmkmGrid","productJasaGrid","productKomoditasGrid"].forEach(id=>{
+      const grid = document.getElementById(id);
+      if(grid) grid.innerHTML = '<div class="product-empty">Data belum dapat dimuat. Silakan periksa API web_produk.</div>';
     });
+  }
 }
 </script>
 
 <!-- COMMUNITY IMPACT API: Web_community_impact -->
 <script>
 const COMMUNITY_API_URL = "https://script.google.com/macros/s/AKfycbx57qGADZO1EMsINBUnMYiqvjRzKUHOd8X1Nsn3YCEyiiZ5Ruy27R7jubGu7_baSt-q/exec";
+const COMMUNITY_FALLBACK_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec?sheet=penerima_manfaat";
 let communityImpactData = [];
 
 function cleanImpactValue(value){ return String(value ?? "").trim(); }
@@ -729,22 +693,41 @@ function normalizeGender(value){
   return "";
 }
 
-function loadCommunityImpactData(){
-  const note = document.getElementById("impactCountNote");
-  const body = document.getElementById("impactTableBody");
-  if(note) note.textContent = "Memuat data Community Impact...";
+async function fetchCommunityJson(url, timeoutMs=12000){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
+  try{
+    const response = await fetch(url,{signal:controller.signal,cache:"no-store"});
+    if(!response.ok) throw new Error("HTTP " + response.status);
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : payload.data;
+    if(!Array.isArray(data)) throw new Error("Format data Community Impact tidak sesuai");
+    return data;
+  }finally{
+    clearTimeout(timer);
+  }
+}
 
-  return loadApiJsonp(COMMUNITY_API_URL, 15000)
-    .then(data => {
-      communityImpactData = data;
-      buildCommunityImpactFilters(data);
-      updateCommunityImpact(data);
-    })
-    .catch(error => {
-      console.error("Community Impact API Error:", error);
-      if(note) note.textContent = "Data Community Impact belum dapat dimuat. Periksa deployment Web_community_impact dan sheet penerima_manfaat.";
-      if(body) body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted)">Data Community Impact belum tersedia.</td></tr>';
-    });
+async function loadCommunityImpactData(){
+  try{
+    let data;
+    try{
+      // Utama: Web_community_impact
+      data = await fetchCommunityJson(COMMUNITY_API_URL);
+    }catch(primaryError){
+      console.warn("Web_community_impact gagal, mencoba endpoint penerima_manfaat cadangan.", primaryError);
+      // Cadangan: endpoint sheet penerima_manfaat dari Web_Sustain
+      data = await fetchCommunityJson(COMMUNITY_FALLBACK_URL);
+    }
+
+    communityImpactData = data;
+    buildCommunityImpactFilters(data);
+    updateCommunityImpact(data);
+  }catch(error){
+    console.error("Community Impact API Error:", error);
+    const note = document.getElementById("impactCountNote");
+    if(note) note.textContent = "Data Community Impact belum dapat dimuat. Periksa deployment Web_community_impact / sheet penerima_manfaat.";
+  }
 }
 
 function buildCommunityImpactFilters(data){
@@ -845,20 +828,22 @@ function updateCommunityImpact(data){
 const API_URL = "https://script.google.com/macros/s/AKfycbzRkE0LAI7KVESHIQAuL1QG9f-WfIXleeBnXM0VaV2wUBSfKYZ2F-DZPRsD4nDze0qdgw/exec";
 let sustainabilityData = [];
 
-function loadSustainabilityData() {
-  return loadApiJsonp(API_URL, 15000)
-    .then(data => {
-      sustainabilityData = data;
-      updateLocationSection(sustainabilityData);
-      buildSustainabilityFilters(sustainabilityData);
-      updateSustainabilityDashboard(sustainabilityData);
-      setupSustainabilityFilters();
-    })
-    .catch(error => {
-      console.error("Sustainability API Error:", error);
-      const note = document.getElementById("locationNote");
-      if(note) note.textContent = "Data Lokasi/Sustainability belum dapat dimuat. Periksa deployment Web_sustain dan sheet Web_binaan.";
-    });
+async function loadSustainabilityData() {
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("Gagal mengambil data dari Google Sheet");
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : payload.data;
+    if (!Array.isArray(data)) throw new Error("Format data API tidak sesuai");
+
+    sustainabilityData = data;
+    updateLocationSection(sustainabilityData);
+    buildSustainabilityFilters(sustainabilityData);
+    updateSustainabilityDashboard(sustainabilityData);
+    setupSustainabilityFilters();
+  } catch (error) {
+    console.error("API Error:", error);
+  }
 }
 
 let locationMap = null;
