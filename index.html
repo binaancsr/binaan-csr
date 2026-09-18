@@ -1073,117 +1073,26 @@ function setupSustainabilityFilters() {
 }
 
 function renderProgramTable(data) {
-  const tbody = document.getElementById("programTableBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  /*
-   * =========================================================
-   * FILTER KHUSUS UNTUK TABEL
-   * =========================================================
-   *
-   * Mifa-CbC dan Mifa-ILRA TIDAK ditampilkan di tabel.
-   *
-   * PENTING:
-   * Filter ini HANYA berlaku untuk TABEL.
-   * Data aslinya tetap ada di sustainabilityData.
-   *
-   * Jadi:
-   * - KPI              = TETAP DIHITUNG
-   * - Total Program    = TETAP DIHITUNG
-   * - Grafik            = TETAP DIHITUNG
-   * - Diagram           = TETAP DIHITUNG
-   * - Activity          = TETAP DIHITUNG
-   * - Penerima Manfaat  = TETAP DIHITUNG
-   * - Tabel             = Mifa-CbC & Mifa-ILRA DISEMBUNYIKAN
-   * =========================================================
-   */
-
-  const programs = data.filter(row => {
-
-    // Ambil kategori dari kolom "Kategori" di Google Sheet
-    const kategori = cleanValue(row["Kategori"])
-      .toLowerCase()
-      .trim();
-
-    // Sembunyikan Mifa-CbC dan Mifa-ILRA HANYA dari tabel
-    if (
-      kategori === "mifa-cbc" ||
-      kategori === "mifa-ilra"
-    ) {
-      return false;
-    }
-
-    // Data yang ditampilkan harus memiliki Monitoring Code
-    return cleanValue(row["Monitoring Code"]) !== "";
-  });
-
-  /*
-   * =========================================================
-   * JIKA TIDAK ADA DATA
-   * =========================================================
-   */
-
-  if (programs.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td class="empty" colspan="9">
-          Tidak ada program sesuai filter yang dipilih.
-        </td>
-      </tr>
-    `;
+  const tbody=document.getElementById("programTableBody");
+  if(!tbody)return;
+  tbody.innerHTML="";
+  const programs=data.filter(row=>cleanValue(row["Monitoring Code"])!=="");
+  if(programs.length===0){
+    tbody.innerHTML='<tr><td class="empty" colspan="9">Tidak ada program sesuai filter yang dipilih.</td></tr>';
     return;
   }
-
-  /*
-   * =========================================================
-   * TAMPILKAN DATA KE TABEL
-   * =========================================================
-   */
-
-  programs.forEach(row => {
-
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>
-        <b>${escapeHtml(cleanValue(row["Monitoring Code"]))}</b>
-      </td>
-
-      <td>
-        ${escapeHtml(cleanValue(row["Deskripsi"]))}
-      </td>
-
-      <td>
-        ${escapeHtml(cleanValue(row["Activity"]))}
-      </td>
-
-      <td>
-        ${escapeHtml(cleanValue(row["Sub-Kategori"]))}
-      </td>
-
-      <td>
-        ${escapeHtml(cleanValue(row["Detail Benefit Recipients"]))}
-      </td>
-
-      <td>
-        ${escapeHtml(cleanValue(row["Hasil Monev Sustain"]))}
-      </td>
-
-      <td>
-        ${escapeHtml(cleanValue(row["Status Monitoring (Sustain)"]))}
-      </td>
-
-      <td>
-        ${escapeHtml(formatDateValue(row["Tgl Monev Sustain"]))}
-      </td>
-
-      <td>
-        ${escapeHtml(cleanValue(row["Summary Monev"]))}
-      </td>
-    `;
-
+  programs.forEach(row=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td><b>${escapeHtml(cleanValue(row["Monitoring Code"]))}</b></td>
+      <td>${escapeHtml(cleanValue(row["Deskripsi"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Activity"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Sub-Kategori"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Detail Benefit Recipients"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Hasil Monev Sustain"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Status Monitoring (Sustain)"]))}</td>
+      <td>${escapeHtml(formatDateValue(row["Tgl Monev Sustain"]))}</td>
+      <td>${escapeHtml(cleanValue(row["Summary Monev"]))}</td>`;
     tbody.appendChild(tr);
   });
 }
