@@ -655,7 +655,11 @@ async function loadProductData(){
     const data = Array.isArray(payload) ? payload : payload.data;
     if(!Array.isArray(data)) throw new Error("Format data Produk tidak sesuai");
 
-    productData = data;
+    // Tampilkan hanya baris yang diizinkan pada kolom "Show on Web".
+    // Kolom "Tampil Web" tetap digunakan untuk menentukan kategori produk.
+    productData = data.filter(row =>
+      String(row["Show on Web"] ?? "").trim().toLowerCase() === "yes"
+    );
 
     renderProductCategory("Produk UMKM","productUmkmGrid","productUmkmNote");
     renderProductCategory("Produk Jasa","productJasaGrid","productJasaNote");
