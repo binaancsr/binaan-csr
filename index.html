@@ -836,7 +836,13 @@ async function loadSustainabilityData() {
     const data = Array.isArray(payload) ? payload : payload.data;
     if (!Array.isArray(data)) throw new Error("Format data API tidak sesuai");
 
-    sustainabilityData = data;
+    // Tampilkan hanya data dengan kolom "Show on Web" bernilai Yes.
+    // Nilai No, kosong, atau nilai lain tidak ditampilkan di website.
+    const visibleData = data.filter(row =>
+      String(row["Show on Web"] ?? "").trim().toLowerCase() === "yes"
+    );
+
+    sustainabilityData = visibleData;
     updateLocationSection(sustainabilityData);
     buildSustainabilityFilters(sustainabilityData);
     updateSustainabilityDashboard(sustainabilityData);
